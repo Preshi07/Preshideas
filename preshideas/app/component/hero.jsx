@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
-const slides = ["/hero1.jpg", "/hero2.jpg", "/hero3.jpg"]; // background images
+const slides = ["/hero0.jpg", "/hero2.jpg", "/hero3.jpg"]; // background images
 
 export default function Hero() {
   const [index, setIndex] = useState(0);
@@ -96,7 +96,7 @@ export default function Hero() {
 
         {/* Bottom right text */}
         <div className="absolute bottom-6 right-6 text-sm text-gray-200 text-right">
-          4 Global Offices serving <br /> UK, USA (New York) & EU
+          4 Global Offices serving <br /> NIGERIA
         </div>
       </div>
     </section>
