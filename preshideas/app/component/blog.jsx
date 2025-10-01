@@ -152,7 +152,7 @@ export default function Blog() {
           <h2 className="text-5xl bg-gradient-to-r from-teal-500 via-green-500 to-blue-500 bg-clip-text text-transparent md:text-7xl font-bold">What's New</h2>
           <Button
             variant="ghost"
-            className="mt-4 text-sm font-medium text-muted-foreground hover:text-accent transition-all duration-300"
+            className="mt-4 text-sm font-medium text-muted-foreground transition-all duration-300"
           >
             Explore More Thoughts →
           </Button>
