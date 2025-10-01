@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
-const slides = ["/hero0.jpg", "/hero2.jpg", "/hero3.jpg"]; // background images
+const slides = ["/hero0.png", "/hero1.png", "/hero3.png"];
 
 export default function Hero() {
   const [index, setIndex] = useState(0);
@@ -66,8 +66,8 @@ export default function Hero() {
               className="mx-2 inline-block rounded-xl overflow-hidden"
             >
               <Image
-                src="/redbull.png"
-                alt="Red Bull"
+                src="/hero1.png"
+                alt="Branding"
                 width={70}
                 height={70}
                 className="rounded-xl"
