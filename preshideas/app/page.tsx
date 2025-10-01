@@ -4,6 +4,9 @@ import Brand from "./component/brandshowcase";
 import Feature from "./component/feature";
 import Service from "./component/services";
 import ScrollStackCards from "./component/stackcard";
+import Blog from "./component/blog";
+import ScrollTextSection from "./component/ScrollTextSection";
+import Footer from "./component/footer";
 
 export default function Home() {
   return (
@@ -15,6 +18,9 @@ export default function Home() {
         <Feature />
         <Service />
         <ScrollStackCards />
+        <Blog />
+        <ScrollTextSection />
+        <Footer />
       </div>
     </>
   );

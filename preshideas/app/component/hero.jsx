@@ -17,9 +17,9 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden rounded-3xl">
+    <section className="relative h-screen w-full overflow-hidden">
       {/* Background Slider */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         <motion.div
           key={slides[index]}
           initial={{ opacity: 0 }}
@@ -35,26 +35,26 @@ export default function Hero() {
             priority
             className="object-cover"
           />
-          {/* Overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/60" />
+          {/* Sleek Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80" />
         </motion.div>
       </AnimatePresence>
 
       {/* Content */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center text-white px-6">
+      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center text-white px-4 sm:px-6 lg:px-12">
         {/* Awards row */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="flex flex-wrap items-center justify-center gap-4 mb-6 text-xs font-medium"
+          className="flex flex-wrap items-center justify-center gap-3 mb-4 text-[10px] sm:text-xs md:text-sm font-medium uppercase tracking-wide text-gray-200"
         >
-          <span>#1 MOST RECOMMENDED CONTENT MARKETING AGENCY</span>
-          {/* add award logos here */}
+          <span>#1 Most Recommended Content Marketing Agency</span>
+          {/* You can drop award logos here */}
         </motion.div>
 
         {/* Heading */}
-        <h1 className="text-5xl md:text-7xl font-extrabold leading-tight">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight drop-shadow-md">
           We Create
           <br />
           <span className="inline-flex items-center">
@@ -63,14 +63,14 @@ export default function Hero() {
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.8, type: "spring", stiffness: 200 }}
-              className="mx-2 inline-block rounded-xl overflow-hidden"
+              className="mx-2 inline-block rounded-lg overflow-hidden"
             >
               <Image
                 src="/hero1.png"
                 alt="Branding"
-                width={70}
-                height={70}
-                className="rounded-xl"
+                width={50}
+                height={50}
+                className="rounded-lg sm:w-[60px] sm:h-[60px] md:w-[70px] md:h-[70px]"
               />
             </motion.div>
             Leaders
@@ -82,21 +82,24 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1 }}
-          className="mt-4 text-lg md:text-xl"
+          className="mt-4 text-sm sm:text-lg md:text-xl text-gray-200 max-w-xl"
         >
           on every searchable platform
         </motion.p>
 
-        {/* Bottom left text */}
-        <div className="absolute bottom-6 left-6 text-sm text-gray-200 max-w-sm text-left">
-          Organic media planners creating, distributing & optimising{" "}
-          <span className="font-bold">search-first content</span> for SEO,
-          Social, PR
-        </div>
+        {/* Bottom text area */}
+        <div className="absolute bottom-4 left-4 right-4 flex flex-col sm:flex-row sm:justify-between gap-3 text-xs sm:text-sm text-gray-300">
+          {/* Bottom left text */}
+          <div className="text-left sm:max-w-xs">
+            Organic media planners creating, distributing & optimising{" "}
+            <span className="font-bold">search-first content</span> for SEO,
+            Social, PR
+          </div>
 
-        {/* Bottom right text */}
-        <div className="absolute bottom-6 right-6 text-sm text-gray-200 text-right">
-          4 Global Offices serving <br /> NIGERIA
+          {/* Bottom right text */}
+          <div className="text-right">
+            4 Global Offices serving <br /> NIGERIA
+          </div>
         </div>
       </div>
     </section>
