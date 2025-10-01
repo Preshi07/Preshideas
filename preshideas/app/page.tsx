@@ -3,6 +3,7 @@ import Hero from "./component/hero";
 import Brand from "./component/brandshowcase";
 import Feature from "./component/feature";
 import Service from "./component/services";
+import ScrollStackCards from "./component/stackcard";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         <Brand />
         <Feature />
         <Service />
+        <ScrollStackCards />
       </div>
     </>
   );
