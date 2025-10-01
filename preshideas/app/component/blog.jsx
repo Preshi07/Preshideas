@@ -9,19 +9,19 @@ const blogPosts = [
   {
     id: 1,
     author: {
-      name: "Carrie Rose",
-      avatar: "/professional-woman-portrait.png",
-      username: "@carrierose",
+      name: "Precious Iheanacho",
+      avatar: "/blogs/user.png",
+      username: "@presh",
     },
     content: {
-      title: "The Future of Design Systems",
+      title: "The Power of Turning Keywords into Questions in SEO",
       excerpt:
-        "Exploring how modern design systems are evolving to meet the demands of cross-platform development and AI-assisted design tools.",
-      image: "/modern-workspace.png",
-      category: "Design",
+        "Introduction So, I recently stumbled upon this awesome SEO trick that I just have to share with you.",
+      image: "/blogs/Seo.png",
+      category: "SEO",
     },
     engagement: { likes: 1247, comments: 89, shares: 34 },
-    timestamp: "3 mins ago",
+    timestamp: "5 mins read",
     isLiked: false,
     isBookmarked: false,
     trending: true,
@@ -29,15 +29,15 @@ const blogPosts = [
   {
     id: 2,
     author: {
-      name: "Ray Saddiq",
-      avatar: "/professional-man-portrait.png",
-      username: "@raysaddiq",
+      name: "Precious Iheanacho",
+      avatar: "/blogs/user.png",
+      username: "@presh",
     },
     content: {
-      title: "Building Scalable React Applications",
+      title: "Unleashing the Power of Data Analytics:",
       excerpt:
-        "Learn the best practices for architecting large-scale React applications that maintain performance and developer experience.",
-      image: "/react-code-development.jpg",
+        "Crafting Content that Resonates with Your Target Audience.",
+      image: "/blogs/Data.png",
       category: "Development",
     },
     engagement: { likes: 2156, comments: 143, shares: 67 },
@@ -49,16 +49,16 @@ const blogPosts = [
   {
     id: 3,
     author: {
-      name: "Sarah Chen",
-      avatar: "/asian-woman-professional.png",
-      username: "@sarahchen",
+      name: "Precious Iheanacho",
+      avatar: "/blogs/user.png",
+      username: "@presh",
     },
     content: {
-      title: "The Art of Minimalist UI Design",
+      title: "Sustainable Practices",
       excerpt:
-        "Discover how less can be more when it comes to creating intuitive and beautiful user interfaces that users love.",
-      image: "/minimalist-ui.png",
-      category: "UI/UX",
+        "Balancing Profit and the Planet in Nigeria and Africa.",
+      image: "/blogs/Profit.png",
+      category: "Profit",
     },
     engagement: { likes: 3421, comments: 234, shares: 156 },
     timestamp: "2 hours ago",
