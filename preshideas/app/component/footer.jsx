@@ -198,13 +198,13 @@ export default function Footer() {
           className="flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center"
         >
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/40">
-            <span>© {new Date().getFullYear()} Rise at Seven Ltd.</span>
+            <span>© {new Date().getFullYear()} Preshideas.</span>
             <span className="hidden sm:inline text-white/20">•</span>
             <span>All rights reserved</span>
             <span className="hidden sm:inline text-white/20">•</span>
-            <span>Company Number 11955187</span>
+            {/* <span>Company Number 11955187</span> */}
             <span className="hidden md:inline text-white/20">•</span>
-            <span className="hidden md:inline">VAT GB 322402945</span>
+            {/* <span className="hidden md:inline"></span> */}
           </div>
 
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
@@ -224,9 +224,9 @@ export default function Footer() {
 
         {/* Tiny credit */}
         <div className="mt-4 text-center text-[11px] text-white/30">
-          Website Made{" "}
+          Preshideas{" "}
           <Link href="#" className="hover:text-white/50 transition-colors">
-            By Shape
+            - Digital Agency {new Date().getFullYear()}
           </Link>
         </div>
       </div>
