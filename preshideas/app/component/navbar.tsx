@@ -28,7 +28,7 @@ export default function Navbar() {
       {/* Desktop Navbar */}
       <nav
         className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-6xl hidden md:flex 
-        items-center justify-between px-6 py-3 transition-all duration-300
+        items-center justify-between px-6 py-2 transition-all duration-300
         ${
           scrolled
             ? "bg-gradient-to-r from-gray-200/90 via-gray-300/80 to-gray-200/90 backdrop-blur-md rounded-full shadow-md"
@@ -44,7 +44,7 @@ export default function Navbar() {
               width={150}
               height={100}
               priority
-              className="h-16 w-auto"
+              className="h-22 w-30"
             />
           </Link>
         </div>
@@ -80,7 +80,7 @@ export default function Navbar() {
                 <Image
                   src="/dropdowns/services.jpg"
                   alt="Services Preview"
-                  width={200}
+                  width={400}
                   height={150}
                   className="rounded-lg object-cover shadow"
                 />
@@ -144,7 +144,7 @@ export default function Navbar() {
       {/* Mobile Navbar Button */}
       <nav
         className={`fixed top-6 left-4 right-4 z-50 flex items-center justify-between 
-        md:hidden px-4 py-3 transition-all duration-300
+        md:hidden px-4 py-1 transition-all duration-300
         ${
           scrolled
             ? "bg-gradient-to-r from-gray-200/90 via-gray-300/80 to-gray-200/90 backdrop-blur-md rounded-full shadow-md"
@@ -156,10 +156,10 @@ export default function Navbar() {
             <Image
               src="/logos/brand.png"
               alt="Rise at Seven"
-              width={120}
-              height={40}
+              width={200}
+              height={100}
               priority
-              className="h-10 w-auto"
+              className="h-20 w-20"
             />
           </Link>
         </div>
