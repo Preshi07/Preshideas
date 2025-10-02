@@ -63,16 +63,19 @@ export default function Navbar() {
               {/* Left side list */}
               <div className="w-1/2 flex flex-col space-y-3 text-gray-700">
                 <Link href="/services/seo" className="hover:text-black">
+                  Digital Marketing
+                </Link>
+                <Link href="/services/seo" className="hover:text-black">
                   SEO
                 </Link>
                 <Link href="/services/content" className="hover:text-black">
-                  Content
+                  Content Marketing
                 </Link>
                 <Link href="/services/branding" className="hover:text-black">
-                  Branding
+                  Automation
                 </Link>
                 <Link href="/services/strategy" className="hover:text-black">
-                  Strategy
+                  AI Agent
                 </Link>
               </div>
               {/* Right side image */}
@@ -197,7 +200,7 @@ export default function Navbar() {
                     width={120}
                     height={40}
                     priority
-                    className="h-10 w-auto"
+                    className="h-20 w-30"
                   />
                 </div>
                 <button onClick={() => setIsOpen(false)}>
@@ -229,13 +232,19 @@ export default function Navbar() {
                         className="ml-4 mt-2 space-y-2 text-lg font-normal"
                       >
                         <li>
+                          <Link href="/services/digital">Digital Marketing</Link>
+                        </li>
+                        <li>
                           <Link href="/services/seo">SEO</Link>
                         </li>
                         <li>
-                          <Link href="/services/content">Content</Link>
+                          <Link href="/services/content">Content Marketing</Link>
                         </li>
                         <li>
-                          <Link href="/services/branding">Branding</Link>
+                          <Link href="/services/automation">Automation</Link>
+                        </li>
+                        <li>
+                          <Link href="/services/ai">AI Agent</Link>
                         </li>
                       </motion.ul>
                     )}
