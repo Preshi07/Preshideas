@@ -62,19 +62,19 @@ export default function Navbar() {
             <div className="absolute top-full left-0 mt-2 hidden group-hover:flex bg-white rounded-xl shadow-lg p-6 w-[500px] z-50">
               {/* Left side list */}
               <div className="w-1/2 flex flex-col space-y-3 text-gray-700">
-                <Link href="/services/seo" className="hover:text-black">
+                <Link href="/digital" className="hover:text-black">
                   Digital Marketing
                 </Link>
-                <Link href="/services/seo" className="hover:text-black">
+                <Link href="/seo" className="hover:text-black">
                   SEO
                 </Link>
-                <Link href="/services/content" className="hover:text-black">
+                <Link href="/content" className="hover:text-black">
                   Content Marketing
                 </Link>
-                <Link href="/services/branding" className="hover:text-black">
+                <Link href="/branding" className="hover:text-black">
                   Automation
                 </Link>
-                <Link href="/services/strategy" className="hover:text-black">
+                <Link href="/strategy" className="hover:text-black">
                   AI Agent
                 </Link>
               </div>
@@ -232,19 +232,19 @@ export default function Navbar() {
                         className="ml-4 mt-2 space-y-2 text-lg font-normal"
                       >
                         <li>
-                          <Link href="/services/digital">Digital Marketing</Link>
+                          <Link href="/digital">Digital Marketing</Link>
                         </li>
                         <li>
-                          <Link href="/services/seo">SEO</Link>
+                          <Link href="/seo">SEO</Link>
                         </li>
                         <li>
-                          <Link href="/services/content">Content Marketing</Link>
+                          <Link href="/content">Content Marketing</Link>
                         </li>
                         <li>
-                          <Link href="/services/automation">Automation</Link>
+                          <Link href="/automation">Automation</Link>
                         </li>
                         <li>
-                          <Link href="/services/ai">AI Agent</Link>
+                          <Link href="/ai">AI Agent</Link>
                         </li>
                       </motion.ul>
                     )}
