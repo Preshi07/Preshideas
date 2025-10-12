@@ -1,3 +1,23 @@
+/* Responsive heights for digital slider container */
+.digital-slider-container {
+  height: 400px;
+  max-height: 500px;
+}
+@media (min-width: 640px) {
+  .digital-slider-container {
+    height: 500px !important;
+  }
+}
+@media (min-width: 768px) {
+  .digital-slider-container {
+    height: 600px !important;
+  }
+}
+@media (min-width: 1024px) {
+  .digital-slider-container {
+    height: 700px !important;
+  }
+}
 @import "tailwindcss";
 @import "tw-animate-css";
 
