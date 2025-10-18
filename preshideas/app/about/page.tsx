@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-export default function NiceToMeetYou() {
+export default function About() {
   return (
     <section className="flex flex-col items-center justify-center min-h-screen bg-[#f5f5f5] text-center px-6">
       <div className="relative">
