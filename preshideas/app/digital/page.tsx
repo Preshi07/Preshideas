@@ -2,8 +2,11 @@
 
 import { motion, useAnimation, Variants } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import UniqueApproachSection from "../component/approachSection";
+import { useRef, useState, useEffect } from "react";
+import { Pause, Play, ArrowRight } from 'lucide-react';
+import PortfolioSection from '../component/portfolio';
+import ClientSection from '../component/Client';
+import FAQSection from '../component/FAQ';
 
 type Slide = {
   title: string;
@@ -17,7 +20,51 @@ type CounterProps = {
   duration?: number;
   suffix?: string;
   prefix?: string;
+};
+
+type Card = {
+  title: string;
+  desc: string;
+  image: string;
+};
+
+interface Logo {
+  name: string;
+  img: string;
 }
+
+interface Card {
+  title: string;
+  image: string;
+  description: string;
+}
+
+
+
+interface ImageSlide {
+  url: string;
+  alt: string;
+}
+
+interface Strategy {
+  title: string;
+  color: string;
+  description: string;
+}
+
+interface UniqueApproachSectionProps {
+  sectionLabel?: string;
+  heading?: string;
+  subheading?: string;
+  images?: ImageSlide[];
+  strategies?: Strategy[];
+  footerText?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  slideInterval?: number;
+  transitionDuration?: number;
+}
+
 
 const slides: Slide[] = [
   { title: "Travelista", category: "Content Marketing", image: "/others/team002.png" },
@@ -111,15 +158,62 @@ const MetricsSection = () => {
               <h3 className="text-3xl md:text-4xl font-bold leading-tight tracking-tight">Grow visibility. Build trust. Win customers. <span className="block text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-indigo-500">Unlock sustainable organic growth.</span></h3>
             </div>
 
+            <div className="text-gray-700 space-y-4">
+              <p className="text-sm md:text-base"><span className="font-semibold text-gray-900">Your website is the first impression for Google</span> and the last impression for your customers—making it absolutely essential.</p>
+              <p className="text-sm md:text-base">Our SEO team has successfully guided over <span className="font-semibold">200+ websites</span> in expanding their organic presence. We build <span className="font-semibold">crawlable, indexable</span> websites and craft a <span className="font-semibold">distinctive experience</span>.</p>
+              <p className="text-sm md:text-base">We provide fully managed SEO that aligns with product strategy and engineering, prioritising performance and search experience optimisation.
+              </p>
+
+              <div className="mt-4 inline-flex items-center gap-3 bg-white/60 border border-white/40 px-4 py-2 rounded-xl shadow-sm">
+                <span className="text-2xl">🏆</span>
+                <div className="text-xs md:text-sm">
+                  <div className="font-semibold">BEST LARGE SEARCH AGENCY</div>
+                  <div className="text-gray-500">GLOBAL SEARCH AWARDS</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+const Channels = () => {
+  const [hovered, setHovered] = useState<number | null>(null);
+  const logoControls = useAnimation();
+  const cardControls = useAnimation();
+
+  useEffect(() => {
+    const animateLoop = async (controls: any, distance: string, duration: number) => {
+      await controls.start({ x: ["0%", `-${distance}`], transition: { x: { repeat: Infinity, repeatType: "loop", ease: "linear", duration } } });
+    };
+    animateLoop(logoControls, "50%", 28);
+    animateLoop(cardControls, "50%", 34);
+  }, [logoControls, cardControls]);
+
+  return (
+    <section className="mt-12">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="relative overflow-hidden py-6">
+          <motion.div animate={logoControls} className="flex gap-10 w-[200%] items-center opacity-90">
+            {[...logos, ...logos].map((src, i) => (
+              <div key={i} className="flex-shrink-0 flex items-center justify-center w-36 h-14 bg-white/60 rounded-lg p-2 shadow-inner">
+                <Image src={src} alt={`logo-${i}`} width={140} height={40} className="object-contain" />
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
         {/* Main Content */}
         <div className="mt-20 grid md:grid-cols-2 gap-16">
           {/* Left heading */}
           <motion.h3
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1 }}
             viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold leading-tight"
+            className="text-3xl md:text-4xl font-bold leading-tight"
           >
             Grow visibility. Build trust. Win customers. <br /> Unlock
             sustainable organic growth.
@@ -170,52 +264,6 @@ const MetricsSection = () => {
               </p>
               <span>🏆</span>
             </div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-const Channels = () => {
-  const [hovered, setHovered] = useState<number | null>(null);
-  const logoControls = useAnimation();
-  const cardControls = useAnimation();
-
-  useEffect(() => {
-    const animateLoop = async (controls: any, distance: string, duration: number) => {
-      await controls.start({ x: ["0%", `-${distance}`], transition: { x: { repeat: Infinity, repeatType: "loop", ease: "linear", duration } } });
-    };
-    animateLoop(logoControls, "50%", 28);
-    animateLoop(cardControls, "50%", 34);
-  }, [logoControls, cardControls]);
-
-  return (
-    <section className="mt-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="relative overflow-hidden py-6">
-          <motion.div animate={logoControls} className="flex gap-10 w-[200%] items-center opacity-90">
-            {[...logos, ...logos].map((src, i) => (
-              <div key={i} className="flex-shrink-0 flex items-center justify-center w-36 h-14 bg-white/60 rounded-lg p-2 shadow-inner">
-                <Image src={src} alt={`logo-${i}`} width={140} height={40} className="object-contain" />
-              </div>
-            ))}
-          </motion.div>
-        </div>
-
-        <div className="relative mt-8 overflow-hidden rounded-3xl">
-          <motion.div animate={cardControls} className="flex gap-6 w-[200%] py-6">
-            {[...cards, ...cards].map((card, idx) => (
-              <motion.div key={idx} onMouseEnter={() => setHovered(idx)} onMouseLeave={() => setHovered(null)} animate={{ scale: hovered === idx ? 1.03 : 1, y: hovered === idx ? -8 : 0 }} transition={{ type: "spring", stiffness: 260, damping: 26 }} className="min-w-[320px] max-w-[380px] bg-gradient-to-br from-white/60 to-white/40 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden cursor-pointer">
-                <div className="relative h-52 md:h-60">
-                  <Image src={card.image} alt={card.title} fill className="object-cover" />
-                </div>
-                <div className="p-5">
-                  <h4 className="text-lg font-semibold">{card.title}</h4>
-                  <p className="mt-2 text-sm text-gray-600">{card.desc}</p>
-                </div>
-              </motion.div>
-            ))}
           </motion.div>
         </div>
       </div>
@@ -685,9 +733,7 @@ const UniqueApproachSection: React.FC<UniqueApproachSectionProps> = ({
   );
 };
 
-export default function DigitalPage() {
-  const sliderRef = useRef<HTMLDivElement | null>(null);
-
+const DigitalPage = () => {
   const slideVariant: Variants = {
     enter: { opacity: 0, x: 40, scale: 0.98 },
     center: { opacity: 1, x: 0, scale: 1 },
@@ -695,17 +741,18 @@ export default function DigitalPage() {
   };
 
   return (
-    <section className="relative bg-white">
-      <div className="max-w-7xl mx-auto px-6 py-24">
-        {/* Hero Section */}
+    <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-pink-50 text-gray-900">
+      <section className="max-w-7xl mx-auto px-6 py-24">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">The Digital Marketing <span className="block md:inline bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-indigo-600">Agency For Higher ROI</span></h1>
+            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
+              The Digital Marketing <span className="block md:inline bg-gradient-to-r from-teal-500 via-green-500 to-blue-500 bg-clip-text text-transparent">Agency For Higher ROI</span>
+            </h1>
 
             <p className="mt-6 text-gray-700 max-w-xl">Choose success with our gradient-driven motion agency — creative systems that turn attention into conversion. We design with empathy, ship with precision.</p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <motion.a whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} href="#book" className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-indigo-600 text-white font-semibold shadow-lg">BOOK A CALL →</motion.a>
+              <motion.a whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} href="#book" className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-teal-500 via-green-500 to-blue-500sparenttext-white font-semibold shadow-lg">BOOK A CALL →</motion.a>
               <motion.a whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} href="#services" className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-gray-200 bg-white/60 backdrop-blur-sm font-semibold">OUR SERVICES →</motion.a>
             </div>
 
@@ -743,7 +790,22 @@ export default function DigitalPage() {
         </div>
 
         <MetricsSection />
-      </div>
-    </section>
+
+        {/* Multi Slider Showcase */}
+        <MultiSliderShowcase />
+
+        {/* Unique Approach Section */}
+        <UniqueApproachSection />
+
+        {/* Portfolio preview */}
+        <PortfolioSection />
+
+        <ClientSection />
+
+        <FAQSection />
+      </section>
+    </main>
   );
 }
+
+export default DigitalPage;
