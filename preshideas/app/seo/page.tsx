@@ -3,6 +3,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import MetricsSection from "../component/MetricsSection";
+import MultiSlider from "../component/MultiSlider";
 
 const slides = [
   {
@@ -31,6 +32,27 @@ const slides = [
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
     image2:
       "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+  },
+];
+
+const cards = [
+  {
+    title: "AI-Powered Marketing",
+    image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600",
+    description:
+      "Automate your brand storytelling with real-time AI insights and content generation tools.",
+  },
+  {
+    title: "Cybersecurity & Compliance",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600",
+    description:
+      "Real-time security monitoring and AI-driven compliance systems for your business.",
+  },
+  {
+    title: "E-commerce Automation",
+    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600",
+    description:
+      "Streamline your sales, manage logistics, and track engagement effortlessly.",
   },
 ];
 const SlideCard = ({ title, tag, years, image1, image2 }: any) => {
@@ -109,7 +131,13 @@ const SeoPage = () => {
 
       <MetricsSection
         metrics={[
-          { from: 0, to: 120, prefix: "$", suffix: "M", label: "Revenue Growth" },
+          {
+            from: 0,
+            to: 120,
+            prefix: "$",
+            suffix: "M",
+            label: "Revenue Growth",
+          },
           { from: 0, to: 45, suffix: "+", label: "Expert Team Members" },
           { from: 0, to: 7, suffix: "x", label: "Average ROI" },
         ]}
@@ -126,10 +154,17 @@ const SeoPage = () => {
           subtitle: "DIGITAL GROWTH AWARDS",
         }}
       />
+
+      <MultiSlider
+        // logos={logos}
+        cards={cards}
+        logoSpeed={1}
+        cardSpeed={1.2}
+        sectionTitle="Trusted By Leading Brands"
+        bgGradient="bg-gradient-to-r from-blue-50 via-white to-green-50"
+      />
     </section>
   );
 };
-
-
 
 export default SeoPage;
