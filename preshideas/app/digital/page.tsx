@@ -169,37 +169,44 @@ const cardVariant: Variants = {
 
 const MetricsSection = () => {
   return (
-    <section className="py-20">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="py-10 sm:py-16 md:py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
-          className="bg-gradient-to-r from-indigo-50/60 via-white to-pink-50/60 rounded-3xl p-8 md:p-12 shadow-xl border border-white/30"
+          className="bg-gradient-to-r from-indigo-50/60 via-white to-pink-50/60 rounded-2xl sm:rounded-3xl 
+                     p-6 sm:p-8 md:p-12 border border-white/30"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
-            <div className="flex flex-col gap-3">
+          {/* Metrics Counters */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10 items-center text-center md:text-left">
+            <div className="flex flex-col items-center md:items-start gap-2 sm:gap-3">
               <Counter from={0} to={100} suffix="m" prefix="$" />
-              <p className="text-sm text-gray-500">Incremental value</p>
+              <p className="text-xs sm:text-sm text-gray-500">
+                Incremental value
+              </p>
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col items-center md:items-start gap-2 sm:gap-3">
               <Counter from={0} to={40} suffix="+" />
-              <p className="text-sm text-gray-500">Strong organic team</p>
+              <p className="text-xs sm:text-sm text-gray-500">
+                Strong organic team
+              </p>
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col items-center md:items-start gap-2 sm:gap-3">
               <Counter from={0} to={6} suffix="x" />
-              <p className="text-sm text-gray-500">
+              <p className="text-xs sm:text-sm text-gray-500">
                 ROI avg from SEO investment
               </p>
             </div>
           </div>
 
-          <div className="mt-8 grid md:grid-cols-2 gap-8 items-start">
+          {/* Main Text Content */}
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-start">
             <div>
-              <h3 className="text-3xl md:text-4xl font-bold leading-tight tracking-tight">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight tracking-tight text-center md:text-left">
                 Grow visibility. Build trust. Win customers.{" "}
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-indigo-500">
                   Unlock sustainable organic growth.
@@ -207,15 +214,15 @@ const MetricsSection = () => {
               </h3>
             </div>
 
-            <div className="text-gray-700 space-y-4">
-              <p className="text-sm md:text-base">
+            <div className="text-gray-700 space-y-4 text-sm sm:text-base text-center md:text-left">
+              <p>
                 <span className="font-semibold text-gray-900">
                   Your website is the first impression for Google
                 </span>{" "}
-                and the last impression for your customers—making it absolutely
-                essential.
+                and the last impression for your customers — making it
+                absolutely essential.
               </p>
-              <p className="text-sm md:text-base">
+              <p>
                 Our SEO team has successfully guided over{" "}
                 <span className="font-semibold">200+ websites</span> in
                 expanding their organic presence. We build{" "}
@@ -223,15 +230,15 @@ const MetricsSection = () => {
                 websites and craft a{" "}
                 <span className="font-semibold">distinctive experience</span>.
               </p>
-              <p className="text-sm md:text-base">
+              <p>
                 We provide fully managed SEO that aligns with product strategy
                 and engineering, prioritising performance and search experience
                 optimisation.
               </p>
 
-              <div className="mt-4 inline-flex items-center gap-3 bg-white/60 border border-white/40 px-4 py-2 rounded-xl shadow-sm">
+              <div className="mt-6 inline-flex items-center justify-center md:justify-start gap-3 bg-white/60 border border-white/40 px-4 py-2 rounded-xl shadow-sm">
                 <span className="text-2xl">🏆</span>
-                <div className="text-xs md:text-sm">
+                <div className="text-xs sm:text-sm">
                   <div className="font-semibold">BEST LARGE SEARCH AGENCY</div>
                   <div className="text-gray-500">GLOBAL SEARCH AWARDS</div>
                 </div>
@@ -940,10 +947,10 @@ const DigitalPage = () => {
           </motion.div>
         </div>
 
-        {/* Auto Scrolling Slider (Gradient cards) */}
-        <div className="mt-16 relative overflow-hidden">
+        {/* Auto Scrolling Slider (Responsive Gradient Cards) */}
+        <div className="mt-10 relative overflow-hidden">
           <motion.div
-            className="flex gap-6 md:gap-8"
+            className="flex gap-4 sm:gap-6 md:gap-8"
             animate={{ x: ["0%", "-50%"] }}
             transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
           >
@@ -955,9 +962,10 @@ const DigitalPage = () => {
                 animate="center"
                 exit="exit"
                 whileHover={{ scale: 1.02 }}
-                className="min-w-[72%] sm:min-w-[300px] md:min-w-[380px] bg-white rounded-3xl shadow-xl overflow-hidden border border-white/30"
+                className="min-w-[85%] xs:min-w-[280px] sm:min-w-[320px] md:min-w-[380px] lg:min-w-[420px]
+                   bg-white rounded-3xl shadow-xl overflow-hidden border border-white/30 flex-shrink-0"
               >
-                <div className="relative h-56 md:h-72">
+                <div className="relative h-48 sm:h-56 md:h-72">
                   <Image
                     src={slide.image}
                     alt={slide.title}
@@ -965,18 +973,21 @@ const DigitalPage = () => {
                     className="object-cover"
                   />
                 </div>
-                <div className="p-5 bg-gradient-to-r from-white to-white/80">
-                  <p className="text-xs uppercase tracking-wide text-gray-500">
+                <div className="p-4 sm:p-5 bg-gradient-to-r from-white to-white/80">
+                  <p className="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500">
                     {slide.category}
                   </p>
-                  <h3 className="mt-2 text-xl font-semibold">{slide.title}</h3>
+                  <h3 className="mt-1 sm:mt-2 text-base sm:text-lg md:text-xl font-semibold text-gray-800">
+                    {slide.title}
+                  </h3>
                 </div>
               </motion.div>
             ))}
           </motion.div>
 
-          <div className="absolute inset-y-0 left-0 w-20 md:w-32 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-          <div className="absolute inset-y-0 right-0 w-20 md:w-32 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+          {/* Gradient fade edges */}
+          <div className="absolute inset-y-0 left-0 w-12 sm:w-20 md:w-32 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-12 sm:w-20 md:w-32 bg-gradient-to-l from-white to-transparent pointer-events-none" />
         </div>
 
         <MetricsSection />
