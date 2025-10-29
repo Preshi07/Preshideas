@@ -156,13 +156,11 @@ const SeoPage = () => {
       />
 
       <MultiSlider
-        // logos={logos}
-        cards={cards}
-        logoSpeed={1}
-        cardSpeed={1.2}
-        sectionTitle="Trusted By Leading Brands"
-        bgGradient="bg-gradient-to-r from-blue-50 via-white to-green-50"
-      />
+      cards={cards}
+      scrollSpeed={1.2}
+      bgGradient="bg-gradient-to-r from-blue-50 via-white to-green-50"
+      sectionTitle="Explore Our Services"
+    />
     </section>
   );
 };

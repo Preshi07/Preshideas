@@ -1,17 +1,21 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Reusable auto-scrolling card slider.
- *
- * Props:
- * - cards: [{ title, image, description }]
- * - scrollSpeed: number (pixels per frame)
- * - bgGradient: string (Tailwind gradient background)
- * - sectionTitle: string (optional)
+ * @typedef {Object} Card
+ * @property {string} title
+ * @property {string} image
+ * @property {string} description
  */
 
+/**
+ * @param {{
+ *   cards?: Card[],
+ *   scrollSpeed?: number,
+ *   bgGradient?: string,
+ *   sectionTitle?: string
+ * }} props
+ */
 const MultiSlider = ({
   cards = [],
   scrollSpeed = 1,
@@ -22,7 +26,6 @@ const MultiSlider = ({
   const cardScrollRef = useRef(null);
   const cardAnimationRef = useRef(null);
 
-  // Duplicate array for seamless loop
   const duplicatedCards = [...cards, ...cards, ...cards];
 
   useEffect(() => {
@@ -32,23 +35,17 @@ const MultiSlider = ({
     let cardScrollPosition = 0;
 
     const animateCards = () => {
-      if (cardContainer) {
-        cardScrollPosition += scrollSpeed;
-
-        if (cardScrollPosition >= cardContainer.scrollWidth / 3) {
-          cardScrollPosition = 0;
-        }
-
-        cardContainer.scrollLeft = cardScrollPosition;
+      cardScrollPosition += scrollSpeed;
+      if (cardScrollPosition >= cardContainer.scrollWidth / 3) {
+        cardScrollPosition = 0;
       }
+      cardContainer.scrollLeft = cardScrollPosition;
       cardAnimationRef.current = requestAnimationFrame(animateCards);
     };
 
     cardAnimationRef.current = requestAnimationFrame(animateCards);
 
-    return () => {
-      cancelAnimationFrame(cardAnimationRef.current);
-    };
+    return () => cancelAnimationFrame(cardAnimationRef.current);
   }, [scrollSpeed]);
 
   return (
