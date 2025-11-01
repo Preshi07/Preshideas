@@ -278,12 +278,17 @@ const SeoPage = () => {
         title="Trusted by"
         highlight="industry"
         suffix="leaders"
-        gallery={testimonials}
+        gallery={testimonials as any}
         interval={7000}
-        logos={["JD", "PRETTYLITTLETHING", "KWALEE", "COMPARE & RECYCLE"]}
+        // logos={[
+        //   "/logos/jd.png",
+        //   "/logos/prettylittlething.png",
+        //   "/logos/kwalee.png",
+        //   "/logos/compare-and-recycle.png",
+        // ]}
       />
 
-      <FAQSection title="FAQs About PreshIdeas" faqs={seoFaqs} />
+      <FAQSection title="FAQs About PreshIdeas" faqs={seoFaqs as any} />
     </section>
   );
 };
