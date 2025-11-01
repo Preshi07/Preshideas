@@ -4,9 +4,9 @@ import { motion, useAnimation, Variants } from "framer-motion";
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 import { Pause, Play, ArrowRight } from "lucide-react";
-import PortfolioSection from "../component/portfolio";
-import ClientSection from "../component/Client";
+import TestimonialGallery from "../component/Client";
 import FAQSection from "../component/FAQ";
+import PortfolioSection from "../component/portfolio";
 
 // Define interfaces and types
 interface Card {
@@ -59,6 +59,16 @@ interface UniqueApproachSectionProps {
   transitionDuration?: number;
 }
 
+type FAQ = {
+	question: string;
+	answer: string;
+};
+
+type FAQSectionProps = {
+	title?: string;
+	faqs?: FAQ[];
+};
+
 const slides: Slide[] = [
   {
     title: "Travelista",
@@ -83,6 +93,47 @@ const slides: Slide[] = [
   { title: "EcoWorld", category: "SEO Strategy", image: "/others/team01.png" },
 ];
 
+const portfolioSlides = [
+  {
+    title: "Presh-Ideas Everywhere",
+    description:
+      "Sometimes, just going to press with a story or hook isn't enough to drive demand at scale...",
+    phone: (
+      <div className="relative w-64 h-[550px] bg-black rounded-[3rem] shadow-2xl overflow-hidden border-8 border-gray-800">
+        <div className="absolute inset-0 bg-black flex items-center justify-center">
+          <svg
+            className="w-16 h-16 text-white"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+          </svg>
+        </div>
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+          <p className="text-white text-sm font-medium">TikTok</p>
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: "Presh-Ideas Live",
+    description:
+      "We help brands capture real-time moments and turn them into lasting impact through rapid response strategies and live activation.",
+    phone: (
+      <div className="relative w-64 h-[550px] bg-red-600 rounded-[3rem] shadow-2xl overflow-hidden border-8 border-black">
+        <div className="absolute inset-0 bg-red-600 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-white text-4xl font-bold mb-2">BBC</div>
+            <div className="text-white text-2xl font-bold tracking-wider">
+              NEWS
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+];
+
 const cards: Card[] = [
   {
     title: "Keyword Universe & Search Journeys",
@@ -105,6 +156,63 @@ const cards: Card[] = [
     image: "/hero0.jpg",
   },
 ];
+
+const faqs = [
+	{
+		question: "How many people are in the Digital PR team?",
+		answer:
+			"Our Digital PR team consists of a mix of strategists, creatives, and outreach specialists who collaborate to deliver impactful campaigns.",
+	},
+	{
+		question: "How do you work with traditional PR teams?",
+		answer:
+			"We complement traditional PR teams by integrating digital insights and SEO strategies to maximize campaign reach and measurable impact.",
+	},
+	{
+		question: "What kind of results should be expected from Digital PR?",
+		answer:
+			"Expect measurable results like backlinks, brand mentions, referral traffic, and improvements in search visibility and authority.",
+	},
+	{
+		question: "How much does Digital PR cost?",
+		answer:
+			"Our pricing depends on campaign scope, goals, and duration — we tailor our approach to match your brand’s needs and scale.",
+	},
+	{
+		question: "What key metrics do you report on for Digital PR?",
+		answer:
+			"We focus on metrics such as backlinks, domain authority improvements, organic traffic growth, and coverage across relevant publications.",
+	},
+	{
+		question: "What do you do if Digital PR isn't driving organic growth/traffic?",
+		answer:
+			"We re-evaluate your strategy using analytics data, identify content gaps, and adjust our campaign focus to maximize performance.",
+	},
+	{
+		question:
+			"How fast can we see the impact of Digital PR and get results/coverage?",
+		answer:
+			"Results can start appearing within weeks, but long-term visibility and SEO authority build progressively with consistent campaigns.",
+	},
+	{
+		question:
+			"What if we can't be super fast or work in a regulated industry?",
+		answer:
+			"We adapt our campaign approach to comply with regulations while still finding creative opportunities to earn media and backlinks.",
+	},
+	{
+		question: "How long does it take to run a digital PR campaign?",
+		answer:
+			"Typically, campaigns run for 3–6 months depending on goals, content development, and outreach scope.",
+	},
+	{
+		question: "Do you do Digital PR training for inhouse brands?",
+		answer:
+			"Yes, we provide tailored training sessions to help inhouse teams understand digital PR principles, tools, and execution best practices.",
+	},
+];
+
+
 
 const logos = [
   "/logos/google.png",
@@ -999,11 +1107,14 @@ const DigitalPage = () => {
         <UniqueApproachSection />
 
         {/* Portfolio preview */}
-        <PortfolioSection />
-
-        <ClientSection />
-
-        <FAQSection />
+        <PortfolioSection
+          heading=""
+          subheading="Products that competitors try to copy"
+          slides={portfolioSlides}
+          interval={6000}
+          buttonText="View Case Studies →"
+        />
+        <FAQSection title="FAQs About PreshIdeas" faqs={faqs} />
       </section>
     </main>
   );
