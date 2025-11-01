@@ -1110,11 +1110,11 @@ const DigitalPage = () => {
         <PortfolioSection
           heading=""
           subheading="Products that competitors try to copy"
-          slides={portfolioSlides}
+          slides={portfolioSlides as any}
           interval={6000}
-          buttonText="View Case Studies →"
+          // buttonText="View Case Studies →"
         />
-        <FAQSection title="FAQs About PreshIdeas" faqs={faqs} />
+        <FAQSection title="FAQs About PreshIdeas" faqs={faqs as any} />
       </section>
     </main>
   );
