@@ -1,3 +1,4 @@
+import React from "react";
 import StrategySection from "../component/StrategySection";
 import MetricsSection from "../component/MetricsSection";
 import MultiSlider from "../component/MultiSlider";
@@ -55,6 +56,23 @@ const automationCards = [
       "Integrate accounting, reporting, and analytics tools for real-time business insights and reduced manual work.",
   },
 ];
+
+type Slide = {
+  image: string;
+  title: string;
+  description: string;
+  [key: string]: any;
+};
+
+interface StrategySectionProps {
+  slides: Slide[];
+  title?: string;
+  highlight?: string;
+  subtitle?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  duration?: number;
+}
 
 export default function AutomationStrategy() {
   return (
