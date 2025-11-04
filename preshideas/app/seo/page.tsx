@@ -106,37 +106,6 @@ const testimonials = [
   },
 ];
 
-const SlideCard = ({ title, tag, years, image1, image2 }: any) => {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <motion.div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      whileHover={{ scale: 1.03 }}
-      className="relative h-[260px] sm:h-[340px] md:h-[420px] lg:h-[480px] min-w-[85%] sm:min-w-[320px] md:min-w-[480px] lg:min-w-[560px]
-                 rounded-3xl overflow-hidden shadow-lg transition-all duration-300 flex-shrink-0 group"
-    >
-      <Image
-        src={hovered ? image2 : image1}
-        alt={title}
-        fill
-        className="object-cover transition-opacity duration-700"
-        sizes="(max-width: 768px) 90vw, 50vw"
-        priority
-      />
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-90 transition-opacity group-hover:opacity-100" />
-      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-        <p className="text-xs uppercase tracking-wider opacity-80">{tag}</p>
-        <h3 className="text-lg sm:text-xl font-semibold">{title}</h3>
-        <p className="text-xs opacity-80 mt-1">{years}</p>
-      </div>
-    </motion.div>
-  );
-};
-
 const seoFaqs = [
   {
     question: "What is SEO and why is it important for my business?",
@@ -190,6 +159,39 @@ const seoFaqs = [
   },
 ];
 
+const SlideCard = ({ title, tag, years, image1, image2 }: any) => {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <motion.div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      whileHover={{ scale: 1.03 }}
+      className="relative h-[260px] sm:h-[340px] md:h-[420px] lg:h-[480px] min-w-[85%] sm:min-w-[320px] md:min-w-[480px] lg:min-w-[560px]
+                 rounded-3xl overflow-hidden shadow-lg transition-all duration-300 flex-shrink-0 group"
+    >
+      <Image
+        src={hovered ? image2 : image1}
+        alt={title}
+        fill
+        className="object-cover transition-opacity duration-700"
+        sizes="(max-width: 768px) 90vw, 50vw"
+        priority
+      />
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-90 transition-opacity group-hover:opacity-100" />
+      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+        <p className="text-xs uppercase tracking-wider opacity-80">{tag}</p>
+        <h3 className="text-lg sm:text-xl font-semibold">{title}</h3>
+        <p className="text-xs opacity-80 mt-1">{years}</p>
+      </div>
+    </motion.div>
+  );
+};
+
+
+
 const SeoPage = () => {
   return (
     <section className="relative bg-neutral-50 py-16 overflow-hidden">
@@ -231,8 +233,8 @@ const SeoPage = () => {
       </div>
 
       {/* Soft edges */}
-      <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-neutral-50 to-transparent pointer-events-none" />
-      <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-neutral-50 to-transparent pointer-events-none" />
+      {/* <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-neutral-50 to-transparent pointer-events-none" />
+      <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-neutral-50 to-transparent pointer-events-none" /> */}
 
       <MetricsSection
         metrics={[

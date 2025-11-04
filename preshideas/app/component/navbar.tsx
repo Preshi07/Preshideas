@@ -68,14 +68,17 @@ export default function Navbar() {
                 <Link href="/seo" className="hover:text-black">
                   SEO
                 </Link>
-                <Link href="/content" className="hover:text-black">
-                  Content Marketing
+                <Link href="/b2b" className="hover:text-black">
+                  B2B Writing
                 </Link>
-                <Link href="/branding" className="hover:text-black">
+                <Link href="/automation" className="hover:text-black">
                   Automation
                 </Link>
                 <Link href="/strategy" className="hover:text-black">
                   AI Agent
+                </Link>
+                <Link href="/branding" className="hover:text-black">
+                  Brand Strategy
                 </Link>
               </div>
               {/* Right side image */}
@@ -238,14 +241,15 @@ export default function Navbar() {
                           <Link href="/seo">SEO</Link>
                         </li>
                         <li>
-                          <Link href="/content">Content Marketing</Link>
+                          <Link href="/b2b">B2B Writing</Link>
                         </li>
                         <li>
                           <Link href="/automation">Automation</Link>
                         </li>
                         <li>
-                          <Link href="/ai">AI Agent</Link>
+                          <Link href="/strategy">AI Agent</Link>
                         </li>
+                        <Link href="/branding">Brand Strategy</Link>
                       </motion.ul>
                     )}
                   </AnimatePresence>
