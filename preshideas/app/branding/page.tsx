@@ -1,5 +1,6 @@
 import StrategySection from "../component/StrategySection";
 import MetricsSection from "../component/MetricsSection";
+import MultiSlider from "../component/MultiSlider";
 
 const brandSlides = [
   {
