@@ -1,135 +1,132 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
-/**
- * @typedef {Object} Card
- * @property {string} title
- * @property {string} image
- * @property {string} description
- */
-
-/**
- * @param {{
- *   cards?: Card[],
- *   scrollSpeed?: number,
- *   bgGradient?: string,
- *   sectionTitle?: string
- * }} props
- */
-const MultiSlider = ({
+export default function MultiSlider({
   cards = [],
-  scrollSpeed = 1,
-  bgGradient = "bg-gradient-to-r from-blue-50 via-white to-green-50",
-  sectionTitle = "Our Services",
-}) => {
-  const [hoveredCard, setHoveredCard] = useState(null);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const cardScrollRef = useRef(null);
-  const cardAnimationRef = useRef(null);
+  scrollSpeed = 0.5,
+  sectionTitle = "Explore Our Features",
+  bgGradient = "bg-gradient-to-br from-white via-gray-50 to-blue-50",
+}) {
+  const [hovered, setHovered] = useState(null);
+  const [isTouch, setIsTouch] = useState(false);
+  const scrollRef = useRef(null);
+  const animationRef = useRef(null);
+  const duplicated = [...cards, ...cards, ...cards]; // seamless loop
+  const scrollTimeout = useRef(null);
 
-  const duplicatedCards = [...cards, ...cards, ...cards];
-
+  // Detect touch
   useEffect(() => {
-    const isTouch =
+    const touch =
       typeof window !== "undefined" &&
       (("ontouchstart" in window) ||
-        window.matchMedia?.("(hover: none), (pointer: coarse)")?.matches);
-    setIsTouchDevice(Boolean(isTouch));
+        navigator.maxTouchPoints > 0 ||
+        window.matchMedia("(pointer: coarse)").matches);
+    setIsTouch(touch);
   }, []);
 
+  // Continuous scroll
   useEffect(() => {
-    const cardContainer = cardScrollRef.current;
-    if (!cardContainer) return;
+    const container = scrollRef.current;
+    if (!container) return;
 
-    // For touch devices, enable native swipe + snap and skip auto animation
-    if (isTouchDevice) {
-      cardContainer.style.scrollBehavior = "smooth";
-      // animation disabled for touch — rely on native swipe
-      return;
-    }
+    let scrollPos = 0;
 
-    let cardScrollPosition = 0;
-
-    const animateCards = () => {
-      // pause animation while a card is hovered (desktop)
-      if (hoveredCard !== null) {
-        cardAnimationRef.current = requestAnimationFrame(animateCards);
-        return;
-      }
-
-      cardScrollPosition += scrollSpeed;
-      // reset when we've scrolled one set (we duplicated cards 3x)
-      if (cardScrollPosition >= cardContainer.scrollWidth / 3) {
-        cardScrollPosition = 0;
-      }
-      cardContainer.scrollLeft = cardScrollPosition;
-      cardAnimationRef.current = requestAnimationFrame(animateCards);
+    const autoScroll = () => {
+      scrollPos += scrollSpeed;
+      if (scrollPos >= container.scrollWidth / 3) scrollPos = 0;
+      container.scrollLeft = scrollPos;
+      animationRef.current = requestAnimationFrame(autoScroll);
     };
 
-    cardAnimationRef.current = requestAnimationFrame(animateCards);
+    animationRef.current = requestAnimationFrame(autoScroll);
 
-    return () => cancelAnimationFrame(cardAnimationRef.current);
-  }, [scrollSpeed, hoveredCard, isTouchDevice]);
+    // Pause when user interacts
+    const stopScroll = () => {
+      cancelAnimationFrame(animationRef.current);
+      clearTimeout(scrollTimeout.current);
+      scrollTimeout.current = setTimeout(() => {
+        animationRef.current = requestAnimationFrame(autoScroll);
+      }, 3000);
+    };
+
+    container.addEventListener("touchstart", stopScroll);
+    container.addEventListener("wheel", stopScroll);
+    container.addEventListener("mouseenter", stopScroll);
+
+    return () => {
+      cancelAnimationFrame(animationRef.current);
+      container.removeEventListener("touchstart", stopScroll);
+      container.removeEventListener("wheel", stopScroll);
+      container.removeEventListener("mouseenter", stopScroll);
+    };
+  }, [scrollSpeed]);
 
   return (
-    <div className={`min-h-screen ${bgGradient} p-6 sm:p-8`}>
-      {sectionTitle && (
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8 sm:mb-10">
+    <section
+      className={`relative w-full min-h-[80vh] py-5 sm:py-20 px-4 sm:px-8 ${bgGradient}`}
+    >
+      {/* Title */}
+      <div className="text-center mb-10 sm:mb-16">
+        <h2 className="text-3xl sm:text-5xl font-bold text-gray-800 tracking-tight">
           {sectionTitle}
         </h2>
-      )}
+        <p className="text-gray-500 text-sm sm:text-base mt-2">
+          Scroll or tap to explore — designed for both touch and desktop.
+        </p>
+      </div>
 
-      <div className="max-w-7xl mx-auto overflow-hidden">
+      {/* Slider */}
+      <div className="overflow-hidden max-w-7xl mx-auto">
         <div
-          ref={cardScrollRef}
-          // overflow-x-auto on mobile for native swipe; hidden for desktop where auto animation runs
-          className="flex gap-6 pb-8 overflow-x-auto sm:overflow-x-hidden scroll-smooth snap-x snap-mandatory"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          ref={scrollRef}
+          className="flex gap-6 sm:gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory touch-pan-x"
+          style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
         >
-          {duplicatedCards.map((card, idx) => (
+          {duplicated.map((card, i) => (
             <div
-              key={idx}
-              // responsive widths and snap alignment for smooth mobile swiping
-              className="flex-shrink-0 w-72 sm:w-80 md:w-96 group snap-start"
-              onMouseEnter={() => !isTouchDevice && setHoveredCard(idx)}
-              onMouseLeave={() => !isTouchDevice && setHoveredCard(null)}
+              key={i}
+              className="flex-shrink-0 snap-start w-64 sm:w-80 md:w-96 group transition-all duration-500"
+              onMouseEnter={() => !isTouch && setHovered(i)}
+              onMouseLeave={() => !isTouch && setHovered(null)}
               onClick={() =>
-                isTouchDevice && setHoveredCard((prev) => (prev === idx ? null : idx))
+                isTouch ? setHovered((p) => (p === i ? null : i)) : null
               }
-              role={isTouchDevice ? "button" : undefined}
-              tabIndex={isTouchDevice ? 0 : undefined}
             >
-              <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-500 transform group-hover:scale-105 group-hover:shadow-2xl">
-                <div className="relative h-44 sm:h-56 md:h-64 overflow-hidden">
-                  <img
+              {/* Card */}
+              <div className="relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transform transition-all duration-500 group-hover:scale-[1.03] border border-gray-100">
+                <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden">
+                  <Image
                     src={card.image}
                     alt={card.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                 </div>
 
-                <div className="p-4 sm:p-6">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-3">
+                <div className="p-5 sm:p-6">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
                     {card.title}
                   </h3>
 
+                  {/* Expandable description */}
                   <div
-                    className="overflow-hidden transition-all duration-300"
-                    style={{
-                      // make description toggle work on touch (tap) and hover on desktop
-                      maxHeight: hoveredCard === idx ? "220px" : "0px",
-                      opacity: hoveredCard === idx ? 1 : 0,
-                    }}
+                    className={`transition-all duration-500 text-gray-600 text-sm leading-relaxed ${
+                      hovered === i
+                        ? "opacity-100 max-h-48"
+                        : "opacity-0 max-h-0 overflow-hidden"
+                    }`}
                   >
-                    <p className="text-gray-600 leading-relaxed text-xs sm:text-sm md:text-base">
-                      {card.description}
-                    </p>
+                    {card.description}
                   </div>
 
-                  {hoveredCard !== idx && (
-                    <div className="text-green-600 font-medium text-sm sm:text-base mt-2">
-                      {isTouchDevice ? "Tap to learn more →" : "Hover to learn more →"}
+                  {hovered !== i && (
+                    <div className="text-green-600 text-xs sm:text-sm font-medium mt-3">
+                      {isTouch ? "Tap to read more →" : "Hover to read more →"}
                     </div>
                   )}
                 </div>
@@ -139,14 +136,12 @@ const MultiSlider = ({
         </div>
       </div>
 
+      {/* Hide scrollbar */}
       <style jsx>{`
-        /* hide scrollbars visually while keeping native scrolling on mobile */
         div::-webkit-scrollbar {
           display: none;
         }
       `}</style>
-    </div>
+    </section>
   );
-};
-
-export default MultiSlider;
+}

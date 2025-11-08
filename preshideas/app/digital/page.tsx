@@ -8,6 +8,7 @@ import TestimonialGallery from "../component/Client";
 import FAQSection from "../component/FAQ";
 import PortfolioSection from "../component/portfolio";
 
+
 // Define interfaces and types
 interface Card {
   title: string;
