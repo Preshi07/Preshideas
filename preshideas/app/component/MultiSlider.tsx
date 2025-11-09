@@ -90,7 +90,7 @@ export default function MultiSlider({
       </div>
 
       {/* Slider */}
-      <div className="overflow-hidden max-w-7xl mx-auto">
+      <div className="overflow-hidden max-w-8xl mx-auto">
         <div
           ref={scrollRef}
           className="flex gap-6 sm:gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory touch-pan-x"

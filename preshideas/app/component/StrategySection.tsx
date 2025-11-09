@@ -45,7 +45,7 @@ const StrategySection: React.FC<StrategySectionProps> = ({
   duration = 40,
 }) => {
   return (
-    <section className="max-w-7xl mx-auto px-6 py-16">
+    <section className="max-w-8xl mx-auto px-6 py-16">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
         <div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-neutral-900 max-w-3xl">

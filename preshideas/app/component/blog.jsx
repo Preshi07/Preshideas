@@ -141,7 +141,7 @@ function BlogCard({ post, index }) {
 export default function Blog() {
   return (
     <section className="relative bg-background py-20">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

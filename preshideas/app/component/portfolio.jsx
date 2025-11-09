@@ -21,7 +21,7 @@ export default function PortfolioSection({
 
   return (
     <section className="bg-white border-t border-gray-200">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-20 grid lg:grid-cols-2 gap-16 items-start">
+      <div className="max-w-8xl mx-auto px-6 lg:px-12 py-20 grid lg:grid-cols-2 gap-16 items-start">
         {/* LEFT CONTENT */}
         <div>
           {subheading && (

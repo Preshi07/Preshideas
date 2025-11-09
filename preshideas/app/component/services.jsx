@@ -20,7 +20,7 @@ export default function Service() {
 
   return (
     <section className="relative bg-[#f5f4f2] min-h-screen w-full px-6 md:px-12 py-16 overflow-hidden">
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-8xl mx-auto relative z-10">
         {/* Header Row */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-12 gap-6">
           <div className="flex flex-wrap items-center gap-4 md:gap-6">

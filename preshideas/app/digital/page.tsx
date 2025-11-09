@@ -6,8 +6,7 @@ import { useRef, useState, useEffect } from "react";
 import { Pause, Play, ArrowRight } from "lucide-react";
 import TestimonialGallery from "../component/Client";
 import FAQSection from "../component/FAQ";
-import PortfolioSection from "../component/portfolio";
-
+// import PortfolioSection from "../component/portfolio";
 
 // Define interfaces and types
 interface Card {
@@ -47,6 +46,19 @@ interface Strategy {
   description: string;
 }
 
+type PortfolioSlide = {
+  title: string;
+  description?: string;
+  phone?: React.ReactNode;
+};
+
+type PortfolioSectionProps = {
+  heading?: string;
+  subheading?: string;
+  slides?: PortfolioSlide[];
+  interval?: number;
+};
+
 interface UniqueApproachSectionProps {
   sectionLabel?: string;
   heading?: string;
@@ -61,13 +73,13 @@ interface UniqueApproachSectionProps {
 }
 
 type FAQ = {
-	question: string;
-	answer: string;
+  question: string;
+  answer: string;
 };
 
 type FAQSectionProps = {
-	title?: string;
-	faqs?: FAQ[];
+  title?: string;
+  faqs?: FAQ[];
 };
 
 const slides: Slide[] = [
@@ -159,61 +171,59 @@ const cards: Card[] = [
 ];
 
 const faqs = [
-	{
-		question: "How many people are in the Digital PR team?",
-		answer:
-			"Our Digital PR team consists of a mix of strategists, creatives, and outreach specialists who collaborate to deliver impactful campaigns.",
-	},
-	{
-		question: "How do you work with traditional PR teams?",
-		answer:
-			"We complement traditional PR teams by integrating digital insights and SEO strategies to maximize campaign reach and measurable impact.",
-	},
-	{
-		question: "What kind of results should be expected from Digital PR?",
-		answer:
-			"Expect measurable results like backlinks, brand mentions, referral traffic, and improvements in search visibility and authority.",
-	},
-	{
-		question: "How much does Digital PR cost?",
-		answer:
-			"Our pricing depends on campaign scope, goals, and duration — we tailor our approach to match your brand’s needs and scale.",
-	},
-	{
-		question: "What key metrics do you report on for Digital PR?",
-		answer:
-			"We focus on metrics such as backlinks, domain authority improvements, organic traffic growth, and coverage across relevant publications.",
-	},
-	{
-		question: "What do you do if Digital PR isn't driving organic growth/traffic?",
-		answer:
-			"We re-evaluate your strategy using analytics data, identify content gaps, and adjust our campaign focus to maximize performance.",
-	},
-	{
-		question:
-			"How fast can we see the impact of Digital PR and get results/coverage?",
-		answer:
-			"Results can start appearing within weeks, but long-term visibility and SEO authority build progressively with consistent campaigns.",
-	},
-	{
-		question:
-			"What if we can't be super fast or work in a regulated industry?",
-		answer:
-			"We adapt our campaign approach to comply with regulations while still finding creative opportunities to earn media and backlinks.",
-	},
-	{
-		question: "How long does it take to run a digital PR campaign?",
-		answer:
-			"Typically, campaigns run for 3–6 months depending on goals, content development, and outreach scope.",
-	},
-	{
-		question: "Do you do Digital PR training for inhouse brands?",
-		answer:
-			"Yes, we provide tailored training sessions to help inhouse teams understand digital PR principles, tools, and execution best practices.",
-	},
+  {
+    question: "How many people are in the Digital PR team?",
+    answer:
+      "Our Digital PR team consists of a mix of strategists, creatives, and outreach specialists who collaborate to deliver impactful campaigns.",
+  },
+  {
+    question: "How do you work with traditional PR teams?",
+    answer:
+      "We complement traditional PR teams by integrating digital insights and SEO strategies to maximize campaign reach and measurable impact.",
+  },
+  {
+    question: "What kind of results should be expected from Digital PR?",
+    answer:
+      "Expect measurable results like backlinks, brand mentions, referral traffic, and improvements in search visibility and authority.",
+  },
+  {
+    question: "How much does Digital PR cost?",
+    answer:
+      "Our pricing depends on campaign scope, goals, and duration — we tailor our approach to match your brand’s needs and scale.",
+  },
+  {
+    question: "What key metrics do you report on for Digital PR?",
+    answer:
+      "We focus on metrics such as backlinks, domain authority improvements, organic traffic growth, and coverage across relevant publications.",
+  },
+  {
+    question:
+      "What do you do if Digital PR isn't driving organic growth/traffic?",
+    answer:
+      "We re-evaluate your strategy using analytics data, identify content gaps, and adjust our campaign focus to maximize performance.",
+  },
+  {
+    question:
+      "How fast can we see the impact of Digital PR and get results/coverage?",
+    answer:
+      "Results can start appearing within weeks, but long-term visibility and SEO authority build progressively with consistent campaigns.",
+  },
+  {
+    question: "What if we can't be super fast or work in a regulated industry?",
+    answer:
+      "We adapt our campaign approach to comply with regulations while still finding creative opportunities to earn media and backlinks.",
+  },
+  {
+    question: "How long does it take to run a digital PR campaign?",
+    answer:
+      "Typically, campaigns run for 3–6 months depending on goals, content development, and outreach scope.",
+  },
+  {
+    question: "Do you do Digital PR training for inhouse brands?",
+    answer:
+      "Yes, we provide tailored training sessions to help inhouse teams understand digital PR principles, tools, and execution best practices.",
+  },
 ];
-
-
 
 const logos = [
   "/logos/google.png",
@@ -278,54 +288,52 @@ const cardVariant: Variants = {
 
 const MetricsSection = () => {
   return (
-    <section className="py-10 sm:py-16 md:py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section className="py-16 md:py-24">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6">
         <motion.div
-          className="bg-gradient-to-r from-indigo-50/60 via-white to-pink-50/60 rounded-2xl sm:rounded-3xl 
-                     p-6 sm:p-8 md:p-12 border border-white/30"
+          className="bg-gradient-to-br from-accent/5 via-background to-accent/10 rounded-3xl 
+                     p-8 md:p-16 border border-accent/10 backdrop-blur-sm"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
           {/* Metrics Counters */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10 items-center text-center md:text-left">
-            <div className="flex flex-col items-center md:items-start gap-2 sm:gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 md:gap-16 items-center text-center md:text-left mb-12">
+            <div className="flex flex-col items-center md:items-start gap-3">
               <Counter from={0} to={100} suffix="m" prefix="$" />
-              <p className="text-xs sm:text-sm text-gray-500">
-                Incremental value
-              </p>
+              <p className="text-sm text-muted-foreground">Incremental value</p>
             </div>
 
-            <div className="flex flex-col items-center md:items-start gap-2 sm:gap-3">
+            <div className="flex flex-col items-center md:items-start gap-3">
               <Counter from={0} to={40} suffix="+" />
-              <p className="text-xs sm:text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Strong organic team
               </p>
             </div>
 
-            <div className="flex flex-col items-center md:items-start gap-2 sm:gap-3">
+            <div className="flex flex-col items-center md:items-start gap-3">
               <Counter from={0} to={6} suffix="x" />
-              <p className="text-xs sm:text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 ROI avg from SEO investment
               </p>
             </div>
           </div>
 
           {/* Main Text Content */}
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
             <div>
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight tracking-tight text-center md:text-left">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight text-primary mb-6">
                 Grow visibility. Build trust. Win customers.{" "}
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-indigo-500">
+                <span className="block text-accent">
                   Unlock sustainable organic growth.
                 </span>
               </h3>
             </div>
 
-            <div className="text-gray-700 space-y-4 text-sm sm:text-base text-center md:text-left">
+            <div className="text-foreground space-y-5 text-base leading-relaxed">
               <p>
-                <span className="font-semibold text-gray-900">
+                <span className="font-semibold text-primary">
                   Your website is the first impression for Google
                 </span>{" "}
                 and the last impression for your customers — making it
@@ -345,11 +353,15 @@ const MetricsSection = () => {
                 optimisation.
               </p>
 
-              <div className="mt-6 inline-flex items-center justify-center md:justify-start gap-3 bg-white/60 border border-white/40 px-4 py-2 rounded-xl shadow-sm">
+              <div className="mt-8 inline-flex items-center gap-3 bg-card border border-accent/20 px-5 py-3 rounded-full shadow-lg">
                 <span className="text-2xl">🏆</span>
-                <div className="text-xs sm:text-sm">
-                  <div className="font-semibold">BEST LARGE SEARCH AGENCY</div>
-                  <div className="text-gray-500">GLOBAL SEARCH AWARDS</div>
+                <div className="text-xs">
+                  <div className="font-semibold text-primary">
+                    BEST LARGE SEARCH AGENCY
+                  </div>
+                  <div className="text-muted-foreground text-xs">
+                    GLOBAL SEARCH AWARDS
+                  </div>
                 </div>
               </div>
             </div>
@@ -360,113 +372,72 @@ const MetricsSection = () => {
   );
 };
 
+// ===== Channels Section (Responsive Auto Slide) =====
 const Channels = () => {
-  const [hovered, setHovered] = useState<number | null>(null);
-  const logoControls = useAnimation();
-  const cardControls = useAnimation();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    const animateLoop = async (
-      controls: any,
-      distance: string,
-      duration: number
-    ) => {
-      await controls.start({
-        x: ["0%", `-${distance}`],
-        transition: {
-          x: { repeat: Infinity, repeatType: "loop", ease: "linear", duration },
-        },
-      });
+    const container = scrollRef.current;
+    if (!container) return;
+
+    let scrollSpeed = window.innerWidth < 640 ? 0.3 : 0.7; // slower on mobile
+    let scrollPos = 0;
+
+    const animate = () => {
+      if (!isPaused && container) {
+        scrollPos += scrollSpeed;
+        container.scrollLeft = scrollPos;
+
+        // reset when reaching the end
+        if (scrollPos >= container.scrollWidth / 2) {
+          scrollPos = 0;
+          container.scrollLeft = 0;
+        }
+      }
+      animationRef.current = requestAnimationFrame(animate);
     };
-    animateLoop(logoControls, "50%", 28);
-    animateLoop(cardControls, "50%", 34);
-  }, [logoControls, cardControls]);
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [isPaused]);
 
   return (
     <section className="mt-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="relative overflow-hidden py-6">
-          <motion.div
-            animate={logoControls}
-            className="flex gap-10 w-[200%] items-center opacity-90"
-          >
-            {[...logos, ...logos].map((src, i) => (
-              <div
-                key={i}
-                className="flex-shrink-0 flex items-center justify-center w-36 h-14 bg-white/60 rounded-lg p-2 shadow-inner"
-              >
-                <Image
-                  src={src}
-                  alt={`logo-${i}`}
-                  width={140}
-                  height={40}
-                  className="object-contain"
-                />
-              </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Main Content */}
-        <div className="mt-20 grid md:grid-cols-2 gap-16">
-          {/* Left heading */}
-          <motion.h3
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1 }}
-            viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold leading-tight"
-          >
-            Grow visibility. Build trust. Win customers. <br /> Unlock
-            sustainable organic growth.
-          </motion.h3>
-
-          {/* Right text */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="space-y-6 text-gray-700 text-lg"
-          >
-            <p>
-              <span className="font-semibold text-black">
-                Your website is the first impression for Google
-              </span>{" "}
-              and the last impression for your customers—making it absolutely
-              essential.
-            </p>
-            <p>
-              Our SEO team has successfully guided over{" "}
-              <span className="font-semibold">200+ websites</span> in expanding
-              their organic presence. Our focus is clear: develop{" "}
-              <span className="font-semibold">crawlable, indexable</span>{" "}
-              websites, deliver a distinctive{" "}
-              <span className="font-semibold">experience</span> that competitors
-              cannot easily replicate, and ensure{" "}
-              <span className="font-semibold">performance</span> that sets new
-              industry standards.
-            </p>
-            <p>
-              We provide a fully managed SEO solution that aligns seamlessly
-              with your product strategy. By collaborating closely with
-              development teams, we build a prioritised roadmap strengthened by
-              shared expertise. We also specialise in{" "}
-              <span className="bg-green-100 text-green-700 px-2 py-1 rounded">
-                search experience optimisation
-              </span>
-              .
-            </p>
-
-            {/* Award */}
-            <div className="pt-6 font-bold text-xl flex items-center gap-2">
-              <span>🏆</span>
-              <p>
-                BEST LARGE SEARCH AGENCY <br /> AT GLOBAL SEARCH AWARDS
-              </p>
-              <span>🏆</span>
+      <div className="max-w-8xl mx-auto px-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">
+          Featured In
+        </h2>
+        <div
+          ref={scrollRef}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
+          className="flex gap-10 overflow-hidden"
+          style={{
+            scrollBehavior: "smooth",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          {[...logos, ...logos].map((src, i) => (
+            <div
+              key={i}
+              className="flex-shrink-0 w-36 h-14 bg-white/60 rounded-lg p-2 shadow-inner flex items-center justify-center"
+            >
+              <Image
+                src={src}
+                alt={`logo-${i}`}
+                width={140}
+                height={40}
+                className="object-contain"
+              />
             </div>
-          </motion.div>
+          ))}
         </div>
       </div>
     </section>
@@ -501,7 +472,7 @@ const MultiSliderShowcase: React.FC = () => {
     {
       title: "Press Office",
       image:
-        "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=600&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1586281380384-e5d43616b9aa?w=600&h=400&fit=crop",
       description:
         "Professional media relations and press coverage management. We handle all aspects of your brand's media presence.",
     },
@@ -621,11 +592,11 @@ const MultiSliderShowcase: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
+    <div className="min-h-screen bg-background py-12">
       {/* Logo Slider Section */}
-      <div className="max-w-8xl mx-auto mb-16">
-        <div className="bg-white p-8 overflow-hidden">
-          <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">
+      <div className="max-w-8xl mx-auto mb-16 px-4">
+        <div className="bg-card p-8 rounded-2xl border border-border">
+          <h2 className="text-2xl font-bold text-primary mb-8 text-center bg-gradient-to-r from-teal-500 via-green-500 to-blue-500 bg-clip-text text-transparent">
             Featured In
           </h2>
 
@@ -644,7 +615,7 @@ const MultiSliderShowcase: React.FC = () => {
                 >
                   <div className="grayscale hover:grayscale-0 transition-all duration-300 transform hover:scale-110">
                     <img
-                      src={logo.img}
+                      src={logo.img || "/placeholder.svg"}
                       alt={logo.name}
                       className="h-12 w-auto object-contain"
                       onError={(
@@ -665,7 +636,7 @@ const MultiSliderShowcase: React.FC = () => {
       </div>
 
       {/* Cards Slider Section */}
-      <div className="max-w-8xl mx-auto overflow-hidden">
+      <div className="max-w-8xl mx-auto overflow-hidden px-4">
         <div
           ref={cardScrollRef}
           className="flex gap-6 pb-8 overflow-x-hidden"
@@ -674,22 +645,24 @@ const MultiSliderShowcase: React.FC = () => {
           {duplicatedCards.map((card, idx) => (
             <div
               key={idx}
-              className="flex-shrink-0 w-96 group"
+              className="flex-shrink-0 w-full sm:w-80 md:w-96 group"
               onMouseEnter={() => setHoveredCard(idx)}
               onMouseLeave={() => setHoveredCard(null)}
             >
-              <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-500 transform group-hover:scale-105 group-hover:shadow-2xl">
-                <div className="relative h-64 overflow-hidden">
+              <div className="bg-card rounded-2xl shadow-lg overflow-hidden transition-all duration-500 transform group-hover:shadow-2xl group-hover:scale-105 border border-border">
+                {/* Responsive image height - smaller on mobile, larger on desktop */}
+                <div className="relative h-40 sm:h-56 md:h-64 overflow-hidden">
                   <img
-                    src={card.image}
+                    src={card.image || "/placeholder.svg"}
                     alt={card.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent" />
                 </div>
 
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                <div className="p-4 sm:p-5 md:p-6">
+                  {/* Responsive text sizes for mobile/tablet/desktop */}
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">
                     {card.title}
                   </h3>
 
@@ -700,13 +673,13 @@ const MultiSliderShowcase: React.FC = () => {
                       opacity: hoveredCard === idx ? 1 : 0,
                     }}
                   >
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">
                       {card.description}
                     </p>
                   </div>
 
                   {hoveredCard !== idx && (
-                    <div className="text-blue-600 font-medium">
+                    <div className="text-xs sm:text-sm bg-gradient-to-r from-teal-500 via-green-500 to-blue-500 bg-clip-text text-transparent font-medium">
                       Hover to learn more →
                     </div>
                   )}
@@ -815,7 +788,7 @@ const UniqueApproachSection: React.FC<UniqueApproachSectionProps> = ({
       <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-lime-100 rounded-full filter blur-3xl opacity-30 -z-0" />
       <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-emerald-100 rounded-full filter blur-3xl opacity-30 -z-0" />
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-8xl mx-auto relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
           {/* Left Side - Image Slider */}
           <div className="relative order-2 lg:order-1" data-aos="fade-right">
@@ -980,6 +953,139 @@ const UniqueApproachSection: React.FC<UniqueApproachSectionProps> = ({
   );
 };
 
+const PortfolioSection: React.FC<PortfolioSectionProps> = ({
+  heading = "Our Portfolio",
+  subheading = "Showcasing our best work",
+  slides = [],
+  interval = 5000,
+}) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const autoSlideRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (slides.length === 0) return;
+
+    autoSlideRef.current = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, interval);
+
+    return () => {
+      if (autoSlideRef.current) clearInterval(autoSlideRef.current);
+    };
+  }, [slides.length, interval]);
+
+  const handlePrevious = () => {
+    setDirection(-1);
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const handleNext = () => {
+    setDirection(1);
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  if (slides.length === 0) return null;
+
+  const currentSlideData = slides[currentSlide];
+
+  return (
+    <section className="py-12 md:py-16 lg:py-24 px-4 sm:px-6 bg-card/50 rounded-2xl md:rounded-3xl">
+      <div className="max-w-8xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="mb-8 md:mb-12"
+        >
+          {heading && (
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-2 md:mb-4">
+              {heading}
+            </h2>
+          )}
+          <p className="text-sm sm:text-base md:text-lg text-foreground/70">
+            {subheading}
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+          {/* Slides Navigation */}
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, x: direction * 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: direction * -40 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-4 md:space-y-6"
+          >
+            <div>
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-2 md:mb-3">
+                {currentSlideData.title}
+              </h3>
+              {currentSlideData.description && (
+                <p className="text-sm sm:text-base md:text-lg text-foreground/80 leading-relaxed">
+                  {currentSlideData.description}
+                </p>
+              )}
+            </div>
+
+            {/* Navigation Controls */}
+            <div className="flex items-center gap-3 md:gap-4 pt-4 md:pt-6">
+              <button
+                onClick={handlePrevious}
+                className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all text-lg md:text-xl"
+                aria-label="Previous slide"
+              >
+                ←
+              </button>
+
+              <div className="flex gap-1.5 md:gap-2">
+                {slides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`rounded-full transition-all ${
+                      idx === currentSlide
+                        ? "bg-accent w-6 md:w-8 h-2.5 md:h-3"
+                        : "bg-accent/30 w-2.5 h-2.5 md:w-3 md:h-3 hover:bg-accent/50"
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={handleNext}
+                className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all text-lg md:text-xl"
+                aria-label="Next slide"
+              >
+                →
+              </button>
+            </div>
+
+            {/* Slide Counter */}
+            <div className="text-xs md:text-sm text-muted-foreground">
+              {currentSlide + 1} / {slides.length}
+            </div>
+          </motion.div>
+
+          {/* Phone/Image Display */}
+          <motion.div
+            key={`phone-${currentSlide}`}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="flex justify-center"
+          >
+            {currentSlideData.phone}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const DigitalPage = () => {
   const slideVariant: Variants = {
     enter: { opacity: 0, x: 40, scale: 0.98 },
@@ -989,7 +1095,7 @@ const DigitalPage = () => {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-pink-50 text-gray-900">
-      <section className="max-w-7xl mx-auto px-6 py-24">
+      <section className="max-w-8xl mx-auto px-6 py-24">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -18 }}
@@ -1113,7 +1219,6 @@ const DigitalPage = () => {
           subheading="Products that competitors try to copy"
           slides={portfolioSlides as any}
           interval={6000}
-          // buttonText="View Case Studies →"
         />
         <FAQSection title="FAQs About PreshIdeas" faqs={faqs as any} />
       </section>

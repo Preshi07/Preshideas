@@ -235,21 +235,47 @@ export default function Navbar() {
                         className="ml-4 mt-2 space-y-2 text-lg font-normal"
                       >
                         <li>
-                          <Link href="/digital">Digital Marketing</Link>
+                          <Link
+                            href="/digital"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            Digital Marketing
+                          </Link>
                         </li>
                         <li>
-                          <Link href="/seo">SEO</Link>
+                          <Link href="/seo" onClick={() => setIsOpen(false)}>
+                            SEO
+                          </Link>
                         </li>
                         <li>
-                          <Link href="/b2b">B2B Writing</Link>
+                          <Link href="/b2b" onClick={() => setIsOpen(false)}>
+                            B2B Writing
+                          </Link>
                         </li>
                         <li>
-                          <Link href="/automation">Automation</Link>
+                          <Link
+                            href="/automation"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            Automation
+                          </Link>
                         </li>
                         <li>
-                          <Link href="/strategy">AI Agent</Link>
+                          <Link
+                            href="/strategy"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            AI Agent
+                          </Link>
                         </li>
-                        <Link href="/branding">Brand Strategy</Link>
+                        <li>
+                          <Link
+                            href="/branding"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            Brand Strategy
+                          </Link>
+                        </li>
                       </motion.ul>
                     )}
                   </AnimatePresence>
@@ -277,13 +303,28 @@ export default function Navbar() {
                         className="ml-4 mt-2 space-y-2 text-lg font-normal"
                       >
                         <li>
-                          <Link href="/about/company">Company</Link>
+                          <Link
+                            href="/about/company"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            Company
+                          </Link>
                         </li>
                         <li>
-                          <Link href="/about/team">Team</Link>
+                          <Link
+                            href="/about/team"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            Team
+                          </Link>
                         </li>
                         <li>
-                          <Link href="/about/culture">Culture</Link>
+                          <Link
+                            href="/about/culture"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            Culture
+                          </Link>
                         </li>
                       </motion.ul>
                     )}
@@ -291,16 +332,24 @@ export default function Navbar() {
                 </li>
 
                 <li>
-                  <Link href="/work">Work</Link>
+                  <Link href="/work" onClick={() => setIsOpen(false)}>
+                    Work
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/careers">Careers</Link>
+                  <Link href="/careers" onClick={() => setIsOpen(false)}>
+                    Careers
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/blog">Blog</Link>
+                  <Link href="/blog" onClick={() => setIsOpen(false)}>
+                    Blog
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/webinar">Webinar</Link>
+                  <Link href="/webinar" onClick={() => setIsOpen(false)}>
+                    Webinar
+                  </Link>
                 </li>
               </ul>
 

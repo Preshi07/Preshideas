@@ -56,7 +56,7 @@ export default function ScrollStackCards() {
       className="relative bg-background"
     >
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
-        <div className="relative w-full max-w-7xl mx-auto px-1 sm:px-4 md:px-6 lg:px-8">
+        <div className="relative w-full max-w-8xl mx-auto px-1 sm:px-4 md:px-6 lg:px-8">
           {/* Header */}
           <motion.div
             style={{

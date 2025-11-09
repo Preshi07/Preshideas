@@ -63,7 +63,7 @@ export default function Footer() {
         <div className="absolute -right-1/4 bottom-0 h-72 w-72 rounded-full bg-purple-500/5 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-6 pb-10 pt-14 lg:px-8 lg:pt-16">
+      <div className="relative mx-auto max-w-8xl px-6 pb-10 pt-14 lg:px-8 lg:pt-16">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
           {/* Newsletter + Contact */}
           <motion.div

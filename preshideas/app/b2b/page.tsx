@@ -169,7 +169,7 @@ const faqs = [
 export default function B2BPage() {
   return (
     <section className="relative bg-neutral-50 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-8xl mx-auto px-6 py-16">
         {/* Header Section */}
         <StrategySection
           slides={B2Bslides}

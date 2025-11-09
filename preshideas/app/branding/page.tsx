@@ -167,7 +167,7 @@ const faqs = [
 export default function BrandStrategy() {
   return (
     <section className="relative bg-neutral-50 py-16 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-8xl mx-auto px-6 py-16">
         <StrategySection
           slides={brandSlides}
           title="A brand strategy that"
