@@ -2,18 +2,32 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
+// ✅ Define card type
+type Card = {
+  title: string;
+  image: string;
+  description: string;
+};
+
+type MultiSliderProps = {
+  cards?: Card[];
+  scrollSpeed?: number;
+  sectionTitle?: string;
+  bgGradient?: string;
+};
+
 export default function MultiSlider({
   cards = [],
   scrollSpeed = 0.5,
   sectionTitle = "Explore Our Features",
   bgGradient = "bg-gradient-to-br from-white via-gray-50 to-blue-50",
-}) {
-  const [hovered, setHovered] = useState(null);
+}: MultiSliderProps) {
+  const [hovered, setHovered] = useState<number | null>(null);
   const [isTouch, setIsTouch] = useState(false);
-  const scrollRef = useRef(null);
-  const animationRef = useRef(null);
-  const duplicated = [...cards, ...cards, ...cards]; // seamless loop
-  const scrollTimeout = useRef(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const animationRef = useRef<number | null>(null);
+  const duplicated = [...cards, ...cards, ...cards];
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Detect touch
   useEffect(() => {
@@ -41,10 +55,9 @@ export default function MultiSlider({
 
     animationRef.current = requestAnimationFrame(autoScroll);
 
-    // Pause when user interacts
     const stopScroll = () => {
-      cancelAnimationFrame(animationRef.current);
-      clearTimeout(scrollTimeout.current);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
       scrollTimeout.current = setTimeout(() => {
         animationRef.current = requestAnimationFrame(autoScroll);
       }, 3000);
@@ -55,7 +68,7 @@ export default function MultiSlider({
     container.addEventListener("mouseenter", stopScroll);
 
     return () => {
-      cancelAnimationFrame(animationRef.current);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
       container.removeEventListener("touchstart", stopScroll);
       container.removeEventListener("wheel", stopScroll);
       container.removeEventListener("mouseenter", stopScroll);
@@ -113,7 +126,6 @@ export default function MultiSlider({
                     {card.title}
                   </h3>
 
-                  {/* Expandable description */}
                   <div
                     className={`transition-all duration-500 text-gray-600 text-sm leading-relaxed ${
                       hovered === i
