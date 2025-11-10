@@ -28,12 +28,12 @@ export default function Navbar() {
       {/* Desktop Navbar */}
       <nav
         className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-6xl hidden md:flex 
-        items-center justify-between px-6 py-2 transition-all duration-300
-        ${
-          scrolled
-            ? "bg-gradient-to-r from-gray-200/90 via-gray-300/80 to-gray-200/90 backdrop-blur-md rounded-full shadow-md"
-            : "bg-transparent"
-        }`}
+  items-center justify-between px-6 py-2 transition-all duration-300
+  ${
+    scrolled
+      ? "bg-gradient-to-r from-gray-200/90 via-gray-300/80 to-gray-200/90 backdrop-blur-md rounded-full shadow-md text-gray-900"
+      : "bg-transparent text-white"
+  }`}
       >
         {/* Logo */}
         <div className="flex items-center">
@@ -50,7 +50,7 @@ export default function Navbar() {
         </div>
 
         {/* Links */}
-        <ul className="flex space-x-6 text-sm text-gray-900 font-medium relative">
+        <ul className="flex space-x-6 text-sm font-medium relative">
           {/* Services mega dropdown */}
           <li className="relative group">
             <button className="flex items-center space-x-1">
@@ -107,9 +107,6 @@ export default function Navbar() {
                 </Link>
                 <Link href="/about/team" className="hover:text-black">
                   Team
-                </Link>
-                <Link href="/about/culture" className="hover:text-black">
-                  Culture
                 </Link>
               </div>
               <div className="w-1/2 flex items-center justify-center">
@@ -316,14 +313,6 @@ export default function Navbar() {
                             onClick={() => setIsOpen(false)}
                           >
                             Team
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            href="/about/culture"
-                            onClick={() => setIsOpen(false)}
-                          >
-                            Culture
                           </Link>
                         </li>
                       </motion.ul>

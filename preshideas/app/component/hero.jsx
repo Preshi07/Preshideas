@@ -90,9 +90,9 @@ export default function Hero() {
             <span className="font-bold">search-first content</span> for SEO,
             Social, PR
           </div>
-          <div className="text-right">
+          {/* <div className="text-right">
             4 Global Offices serving <br /> NIGERIA
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

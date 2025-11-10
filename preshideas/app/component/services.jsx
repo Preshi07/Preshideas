@@ -4,15 +4,15 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const servicesLeft = [
-  { name: "Digital PR", image: "/services/digital-pr.jpg" },
-  { name: "Search & Growth Strategy", image: "/services/strategy.jpg" },
-  { name: "Data & Insights", image: "/services/data.jpg" },
+  { name: "Digital Marketing", image: "/services/digital-pr.jpg" },
+  { name: "Workflow Automation", image: "/services/strategy.jpg" },
+  { name: "Ai Agent Building", image: "/services/data.jpg" },
 ];
 
 const servicesRight = [
-  { name: "Organic Social & Content", image: "/services/social.jpg" },
-  { name: "Content Experience", image: "/services/content.jpg" },
-  { name: "Onsite SEO", image: "/services/seo.jpg" },
+  { name: "Digital PR", image: "/services/social.jpg" },
+  { name: "Content Writing", image: "/services/content.jpg" },
+  { name: "Organic Social Content", image: "/services/seo.jpg" },
 ];
 
 export default function Service() {

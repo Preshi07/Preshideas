@@ -43,7 +43,7 @@ export default function BrandSlider() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-16 sm:mb-20 lg:mb-40"
+          className="mb-14 sm:mb-19 lg:mb-25"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-16 items-start">
             {/* Left Column - Hero Content */}
@@ -61,15 +61,17 @@ export default function BrandSlider() {
               </motion.div>
 
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-[1.05] mb-6 sm:mb-8 text-balance">
-                Driving Demand &{" "}
+                Building Smarter Brands &{" "}
                 <span className="bg-gradient-to-r from-teal-500 via-green-500 to-blue-500 bg-clip-text text-transparent">
-                  Discovery
+                  Systems
                 </span>
               </h1>
 
               <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground leading-relaxed mb-8 sm:mb-10 max-w-2xl text-pretty">
-                Your team's toolkit to stop configuring and start innovating.
-                Securely build, deploy, and scale the best web experiences.
+                From content and SEO to automation and AI - we help you grow faster
+                sharper, and smarter.
+                <br />
+                Because great ideas deserve great execution.
               </p>
 
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-10 sm:mb-12">
@@ -79,7 +81,7 @@ export default function BrandSlider() {
                   whileTap={{ scale: 0.98 }}
                   className="group px-6 sm:px-8 py-3 sm:py-4 rounded-full bg-foreground text-background font-semibold text-sm sm:text-base hover:bg-foreground/90 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-foreground/20"
                 >
-                  Get a demo
+                  Work WIth Us
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </motion.a>
                 <motion.a
@@ -92,7 +94,7 @@ export default function BrandSlider() {
                 </motion.a>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+              {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                 {features.map((feature, idx) => (
                   <motion.div
                     key={idx}
@@ -109,7 +111,7 @@ export default function BrandSlider() {
                     </p>
                   </motion.div>
                 ))}
-              </div>
+              </div> */}
             </div>
 
             {/* Right Column - Stats Grid */}
@@ -149,7 +151,7 @@ export default function BrandSlider() {
         </motion.div>
 
         {/* Brand Slider Section */}
-        <div className="relative mb-16 sm:mb-20 lg:mb-40">
+        <div className="relative mb-14 sm:mb-19 lg:mb-25">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -165,7 +167,7 @@ export default function BrandSlider() {
           </motion.div>
 
           {/* Slider Container */}
-          <div className="relative py-8 sm:py-12 overflow-hidden">
+          <div className="relative py-8 sm:py-10 overflow-hidden">
             <div className="absolute left-0 top-0 h-full w-24 sm:w-48 lg:w-64 z-10 pointer-events-none bg-gradient-to-r from-background via-background/90 to-transparent" />
             <div className="absolute right-0 top-0 h-full w-24 sm:w-48 lg:w-64 z-10 pointer-events-none bg-gradient-to-l from-background via-background/90 to-transparent" />
 
