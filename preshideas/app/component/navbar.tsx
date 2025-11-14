@@ -102,10 +102,10 @@ export default function Navbar() {
             </button>
             <div className="absolute top-full left-0 mt-2 hidden group-hover:flex bg-white rounded-xl shadow-lg p-6 w-[500px] z-50">
               <div className="w-1/2 flex flex-col space-y-3 text-gray-700">
-                <Link href="/about/company" className="hover:text-black">
+                <Link href="/about" className="hover:text-black">
                   Company
                 </Link>
-                <Link href="/about/team" className="hover:text-black">
+                <Link href="/team" className="hover:text-black">
                   Team
                 </Link>
               </div>
@@ -301,7 +301,7 @@ export default function Navbar() {
                       >
                         <li>
                           <Link
-                            href="/about/company"
+                            href="/about"
                             onClick={() => setIsOpen(false)}
                           >
                             Company
@@ -309,7 +309,7 @@ export default function Navbar() {
                         </li>
                         <li>
                           <Link
-                            href="/about/team"
+                            href="/team"
                             onClick={() => setIsOpen(false)}
                           >
                             Team
