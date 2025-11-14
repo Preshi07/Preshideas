@@ -9,9 +9,9 @@ export default function About() {
   return (
     <section className="relative w-full bg-white overflow-hidden">
       {/* Background decorative text */}
-      <div className="absolute top-0 right-0 pointer-events-none select-none opacity-[0.008] leading-none animate-pulse">
+      {/* <div className="absolute top-0 right-0 pointer-events-none select-none opacity-[0.008] leading-none animate-pulse">
         <span className="text-[28rem] font-bold text-gray-900 block -mt-20">Presh</span>
-      </div>
+      </div> */}
 
       <div className="max-w-[1400px] mx-auto px-8 lg:px-16 py-16 relative z-10">
         <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-12 xl:gap-20 items-start">
