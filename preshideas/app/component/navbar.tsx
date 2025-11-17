@@ -95,7 +95,7 @@ export default function Navbar() {
           </li>
 
           {/* About mega dropdown */}
-          <li className="relative group">
+          {/* <li className="relative group">
             <button className="flex items-center space-x-1">
               <span>About</span>
               <ChevronDown className="w-4 h-4" />
@@ -119,8 +119,11 @@ export default function Navbar() {
                 />
               </div>
             </div>
-          </li>
+          </li> */}
 
+          <li>
+            <Link href="/about">About</Link>
+          </li>
           <li>
             <Link href="/work">Work</Link>
           </li>
@@ -278,7 +281,7 @@ export default function Navbar() {
                   </AnimatePresence>
                 </li>
 
-                <li>
+                {/* <li>
                   <button
                     onClick={() => toggleDropdown("about")}
                     className="flex items-center justify-between w-full"
@@ -318,8 +321,13 @@ export default function Navbar() {
                       </motion.ul>
                     )}
                   </AnimatePresence>
-                </li>
+                </li> */}
 
+                <li>
+                  <Link href="/about" onClick={() => setIsOpen(false)}>
+                    About
+                  </Link>
+                </li>
                 <li>
                   <Link href="/work" onClick={() => setIsOpen(false)}>
                     Work
