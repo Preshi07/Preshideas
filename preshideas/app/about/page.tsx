@@ -1,8 +1,29 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef} from "react";
 import { ArrowRight, Play, Pause } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+
+import Counter from "../component/counter";
+
+interface ParallaxImageProps {
+  className?: string;
+}
+
+function ParallaxImage({ className }: ParallaxImageProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["-40px", "40px"]);
+
+  return (
+    <motion.div ref={ref} style={{ y }} className={className}></motion.div>
+  );
+}
 
 export default function About() {
   const [isPlaying, setIsPlaying] = useState(true);
@@ -306,6 +327,138 @@ export default function About() {
                   </motion.li>
                 ))}
               </ul>
+            </motion.div>
+          </div>
+        </div>
+
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8 relative overflow-hidden">
+          {/* Parallax floating avatars */}
+          <ParallaxImage className="absolute top-10 left-10 w-20 h-20 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 opacity-70 blur-sm" />
+          <ParallaxImage className="absolute bottom-20 right-10 w-24 h-24 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 opacity-70 blur-sm" />
+          <ParallaxImage className="absolute top-1/2 right-1/3 w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-red-400 opacity-70 blur-sm" />
+
+          <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* YEARS OF EXPERIENCE */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="bg-white/30 backdrop-blur-xl border border-white/20 shadow-xl rounded-3xl p-8 flex flex-col justify-between h-80"
+            >
+              <h3 className="text-lg font-medium text-gray-700">
+                Years of experience
+              </h3>
+              <div>
+                <div className="text-7xl font-bold mb-2">
+                  <Counter end={8} suffix="+" />
+                </div>
+                <p className="text-gray-600 text-right leading-relaxed">
+                  Expertise that
+                  <br />
+                  drives
+                  <br />
+                  meaningful
+                  <br />
+                  results.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* HAPPY CLIENTS */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="bg-black/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 flex flex-col justify-between h-80 text-white shadow-xl"
+            >
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex -space-x-2">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 border-2 border-black"></div>
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 border-2 border-black"></div>
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-400 border-2 border-black"></div>
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-400 border-2 border-black"></div>
+                  </div>
+
+                  <div className="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">
+                    <Counter end={72} suffix="+" />
+                  </div>
+                </div>
+
+                {/* ⭐⭐⭐⭐⭐ */}
+                <div className="flex gap-1 mb-2">
+                  {[...Array(5)].map((_, i: number) => (
+                    <span key={i} className="text-white text-xl">
+                      ★
+                    </span>
+                  ))}
+                </div>
+
+                <p className="text-gray-400 text-sm">Happy clients worldwide</p>
+              </div>
+
+              <div>
+                <div className="text-7xl font-bold mb-2">
+                  <Counter end={98} suffix="%" />
+                </div>
+                <p className="text-gray-400 text-right leading-relaxed">
+                  Clients stay for
+                  <br />
+                  our quality and
+                  <br />
+                  results.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* PROJECTS DELIVERED */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="bg-white/30 backdrop-blur-xl border border-white/20 rounded-3xl p-8 flex flex-col justify-between h-80 shadow-xl"
+            >
+              <h3 className="text-lg font-medium text-gray-700">
+                Projects delivered
+              </h3>
+              <div>
+                <div className="text-7xl font-bold mb-2">
+                  <Counter end={100} suffix="+" />
+                </div>
+                <p className="text-gray-600 text-right leading-relaxed">
+                  Creative
+                  <br />
+                  solutions built
+                  <br />
+                  with purpose.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* BRANDS TRANSFORMED */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="bg-white/30 backdrop-blur-xl border border-white/20 rounded-3xl p-8 flex flex-col justify-between h-80 shadow-xl"
+            >
+              <h3 className="text-lg font-medium text-gray-700">
+                Brands transformed
+              </h3>
+              <div>
+                <div className="text-7xl font-bold mb-2">
+                  <Counter end={86} suffix="+" />
+                </div>
+                <p className="text-gray-600 text-right leading-relaxed">
+                  From strategy to
+                  <br />
+                  standout visuals.
+                </p>
+              </div>
             </motion.div>
           </div>
         </div>
