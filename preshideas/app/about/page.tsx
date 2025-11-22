@@ -1,14 +1,59 @@
 "use client";
 
-import React, { useState, useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ArrowRight, Play, Pause } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
-
+import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Star } from "lucide-react";
 import Counter from "../component/counter";
+import { Button } from "@/components/ui/button";
+
+interface HeroSectionProps {
+  images: (string | { src: string; alt?: string })[];
+}
+interface LogoCarouselProps {
+  logos: { src: string; alt: string }[];
+}
 
 interface ParallaxImageProps {
   className?: string;
 }
+
+interface StatItemProps {
+  number: string;
+  label: string;
+  description: string;
+  delay?: number;
+}
+
+const staffs = [
+  {
+    src: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=1200&q=80",
+    alt: "Staff Member 1",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80",
+    alt: "Staff Member 2",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80",
+    alt: "Staff Member 3",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80",
+    alt: "Staff Member 4",
+  },
+];
+
+const logos = [
+  { src: "/logos/logo1.png", alt: "Logo 1" },
+  { src: "/logos/logo2.png", alt: "Logo 2" },
+  { src: "/logos/logo3.png", alt: "Logo 3" },
+  { src: "/logos/logo4.png", alt: "Logo 4" },
+  { src: "/logos/logo5.png", alt: "Logo 5" },
+  { src: "/logos/logo6.png", alt: "Logo 6" },
+];
 
 function ParallaxImage({ className }: ParallaxImageProps) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -25,6 +70,303 @@ function ParallaxImage({ className }: ParallaxImageProps) {
   );
 }
 
+interface ScrollingBackgroundProps {
+  images: (string | { src: string; alt?: string })[];
+}
+
+const ScrollingBackground = ({ images }: ScrollingBackgroundProps) => {
+  // normalize input: turn strings into { src, alt }
+  const normalized = images.map((img) =>
+    typeof img === "string" ? { src: img, alt: "" } : img
+  );
+
+  // Duplicate images for seamless loop
+  const duplicatedImages = [...normalized, ...normalized];
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="flex animate-scroll-left h-full">
+        {duplicatedImages.map((image, index) => (
+          <div
+            key={index}
+            className="flex-shrink-0 w-[45vw] sm:w-[35vw] md:w-[28vw] lg:w-[25vw] min-w-[200px] h-full px-1 sm:px-2"
+          >
+            <div className="w-full h-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg">
+              <img
+                src={image.src}
+                alt={image.alt ?? ""}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const HeroSection = ({ images }: HeroSectionProps) => {
+  return (
+    <section className="relative min-h-screen h-screen w-full overflow-hidden bg-gradient-to-b from-gray-50 to-white">
+      {/* Scrolling Background Images */}
+      <ScrollingBackground images={images} />
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" />
+
+      {/* Centered Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 sm:px-6 md:px-8">
+        <h1 className="text-[clamp(2.5rem,12vw,12rem)] sm:text-[clamp(3.5rem,13vw,12rem)] md:text-[clamp(5rem,15vw,12rem)] font-bold leading-[0.9] tracking-tight text-white mb-6 sm:mb-8 drop-shadow-2xl max-w-7xl">
+          Senior Team
+        </h1>
+        <Button
+          variant="default"
+          size="lg"
+          className="relative z-20 group text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12 shadow-xl"
+        >
+          Meet The Risers
+          <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:translate-x-1" />
+        </Button>
+      </div>
+    </section>
+  );
+};
+
+const LogoCarousel = ({ logos }: LogoCarouselProps) => {
+  // Triple duplicate logos for seamless loop
+  const duplicatedLogos = [...logos, ...logos, ...logos];
+
+  return (
+    <div className="w-full bg-white py-8 sm:py-10 md:py-12 overflow-hidden border-t border-gray-200">
+      <div className="flex animate-scroll-left-fast">
+        {duplicatedLogos.map((logo, index) => (
+          <div
+            key={index}
+            className="flex-shrink-0 w-32 sm:w-40 md:w-48 h-16 sm:h-20 md:h-24 flex items-center justify-center px-4 sm:px-6 md:px-8"
+          >
+            <img
+              src={logo.src}
+              alt={logo.alt}
+              className="max-w-full max-h-full object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const CARD_SIZE = "h-[360px] w-[500px]";
+
+const StatItem = ({ number, label, description, delay = 0 }: StatItemProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const targetNumber = parseInt(number);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setIsVisible(true), delay);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [delay]);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const duration = 2000;
+    const steps = 60;
+    const increment = targetNumber / steps;
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= targetNumber) {
+        setCount(targetNumber);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(current));
+      }
+    }, duration / steps);
+
+    return () => clearInterval(timer);
+  }, [isVisible, targetNumber]);
+
+  return (
+    <div
+      ref={ref}
+      className={`group flex flex-col gap-4 transition-all duration-700 hover:scale-105 ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      }`}
+    >
+      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider group-hover:text-foreground">
+        {label}
+      </p>
+
+      <div className="flex items-baseline gap-1.5">
+        <span className="text-8xl font-extralight">
+          {isVisible ? count : 0}
+        </span>
+        <span className="text-4xl font-light text-muted-foreground/60">+</span>
+      </div>
+
+      <p className="text-base text-muted-foreground max-w-[220px] font-light leading-relaxed">
+        {description}
+      </p>
+    </div>
+  );
+};
+
+function StatsSection() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [retentionCount, setRetentionCount] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => entry.isIntersecting && setIsVisible(true),
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const duration = 2000;
+    const steps = 60;
+    const increment = 98 / steps;
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= 98) {
+        setRetentionCount(98);
+        clearInterval(timer);
+      } else {
+        setRetentionCount(Math.floor(current));
+      }
+    }, duration / steps);
+
+    return () => clearInterval(timer);
+  }, [isVisible]);
+
+  const clientAvatars = [
+    { id: 1, initials: "JD", color: "bg-primary" },
+    { id: 2, initials: "SK", color: "bg-secondary" },
+    { id: 3, initials: "MR", color: "bg-accent" },
+    { id: 4, initials: "AL", color: "bg-muted" },
+  ];
+
+  return (
+    <section className="w-full py-24 px-4 md:px-8 bg-muted/10">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          {/* CARD 1 */}
+          <div
+            className={`w-full ${CARD_SIZE} bg-white shadow-sm rounded-3xl p-10 flex flex-col justify-between`}
+          >
+            <StatItem
+              number="8"
+              label="Years of experience"
+              description="Expertise that drives meaningful results."
+            />
+          </div>
+
+          {/* CARD 2 (Black Card) */}
+          <div
+            ref={ref}
+            className={`w-full ${CARD_SIZE} rounded-3xl p-10 shadow-xl bg-[#06070A] text-white border border-black/10 transition-all duration-700 ${
+              isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+            }`}
+          >
+            {/* Avatars */}
+            <div className="flex items-center gap-5 mb-6">
+              <div className="flex -space-x-3">
+                {clientAvatars.map((avatar) => (
+                  <Avatar
+                    key={avatar.id}
+                    className={`w-10 h-10 border-2 border-[#06070A] rounded-full shadow ${avatar.color} hover:scale-110 transition-all`}
+                  >
+                    <AvatarFallback
+                      className={`${avatar.color} text-white text-xs font-semibold`}
+                    >
+                      {avatar.initials}
+                    </AvatarFallback>
+                  </Avatar>
+                ))}
+              </div>
+
+              <div className="bg-white text-black px-4 py-1.5 rounded-xl text-sm font-semibold shadow-md">
+                72+
+              </div>
+            </div>
+
+            {/* Rating */}
+            <div className="mb-6">
+              <div className="flex gap-1.5 mb-2">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-5 h-5 text-amber-400 fill-amber-400"
+                  />
+                ))}
+              </div>
+              <p className="text-sm text-white/70">Happy clients worldwide</p>
+            </div>
+
+            {/* Main Number */}
+            <div className="mt-auto">
+              <div className="flex items-baseline gap-2">
+                <span className="text-7xl font-light">
+                  {isVisible ? retentionCount : 0}
+                </span>
+                <span className="text-4xl text-white/60">%</span>
+              </div>
+              <p className="text-white/70 mt-3 text-base leading-relaxed max-w-xs">
+                Clients stay for our quality and results.
+              </p>
+            </div>
+          </div>
+
+          {/* CARD 3 */}
+          <div
+            className={`w-full ${CARD_SIZE} bg-white shadow-sm rounded-3xl p-10 flex flex-col justify-between`}
+          >
+            <StatItem
+              number="100"
+              label="Projects delivered"
+              description="Creative solutions built with purpose."
+              delay={200}
+            />
+          </div>
+
+          {/* CARD 4 */}
+          <div
+            className={`w-full ${CARD_SIZE} bg-white shadow-sm rounded-3xl p-10 flex flex-col justify-between`}
+          >
+            <StatItem
+              number="86"
+              label="Brands transformed"
+              description="From strategy to standout visuals."
+              delay={400}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function About() {
   const [isPlaying, setIsPlaying] = useState(true);
   const goals = [
@@ -37,12 +379,8 @@ export default function About() {
 
   return (
     <section className="relative w-full bg-white overflow-hidden">
-      {/* Background decorative text */}
-      {/* <div className="absolute top-0 right-0 pointer-events-none select-none opacity-[0.008] leading-none animate-pulse">
-        <span className="text-[28rem] font-bold text-gray-900 block -mt-20">Presh</span>
-      </div> */}
-
       <div className="max-w-[1400px] mx-auto px-8 lg:px-16 py-16 relative z-10">
+        {/* ... content unchanged ... (kept exactly as your original) */}
         <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-12 xl:gap-20 items-start">
           {/* Left side content */}
           <div className="space-y-8 lg:space-y-12 pt-8 lg:pt-16">
@@ -181,7 +519,8 @@ export default function About() {
             </div>
           </div>
         </div>
-        {/* Header */}
+
+        {/* Header + rest unchanged */}
         <motion.div
           className="mb-16"
           initial={{ opacity: 0, y: -20 }}
@@ -201,7 +540,6 @@ export default function About() {
           </div>
         </motion.div>
 
-        {/* Main Title - Right Aligned */}
         <motion.div
           className="text-right mb-20"
           initial={{ opacity: 0, x: 50 }}
@@ -217,7 +555,6 @@ export default function About() {
           </h1>
         </motion.div>
 
-        {/* Content Grid */}
         <div className="grid lg:grid-cols-12 gap-12 mb-16">
           {/* Left Column - Image Card */}
           <motion.div
@@ -331,140 +668,11 @@ export default function About() {
           </div>
         </div>
 
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8 relative overflow-hidden">
-          {/* Parallax floating avatars */}
-          <ParallaxImage className="absolute top-10 left-10 w-20 h-20 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 opacity-70 blur-sm" />
-          <ParallaxImage className="absolute bottom-20 right-10 w-24 h-24 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 opacity-70 blur-sm" />
-          <ParallaxImage className="absolute top-1/2 right-1/3 w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-red-400 opacity-70 blur-sm" />
-
-          <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* YEARS OF EXPERIENCE */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="bg-white/30 backdrop-blur-xl border border-white/20 shadow-xl rounded-3xl p-8 flex flex-col justify-between h-80"
-            >
-              <h3 className="text-lg font-medium text-gray-700">
-                Years of experience
-              </h3>
-              <div>
-                <div className="text-7xl font-bold mb-2">
-                  <Counter end={8} suffix="+" />
-                </div>
-                <p className="text-gray-600 text-right leading-relaxed">
-                  Expertise that
-                  <br />
-                  drives
-                  <br />
-                  meaningful
-                  <br />
-                  results.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* HAPPY CLIENTS */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="bg-black/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 flex flex-col justify-between h-80 text-white shadow-xl"
-            >
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="flex -space-x-2">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 border-2 border-black"></div>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 border-2 border-black"></div>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-400 border-2 border-black"></div>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-400 border-2 border-black"></div>
-                  </div>
-
-                  <div className="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">
-                    <Counter end={72} suffix="+" />
-                  </div>
-                </div>
-
-                {/* ⭐⭐⭐⭐⭐ */}
-                <div className="flex gap-1 mb-2">
-                  {[...Array(5)].map((_, i: number) => (
-                    <span key={i} className="text-white text-xl">
-                      ★
-                    </span>
-                  ))}
-                </div>
-
-                <p className="text-gray-400 text-sm">Happy clients worldwide</p>
-              </div>
-
-              <div>
-                <div className="text-7xl font-bold mb-2">
-                  <Counter end={98} suffix="%" />
-                </div>
-                <p className="text-gray-400 text-right leading-relaxed">
-                  Clients stay for
-                  <br />
-                  our quality and
-                  <br />
-                  results.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* PROJECTS DELIVERED */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="bg-white/30 backdrop-blur-xl border border-white/20 rounded-3xl p-8 flex flex-col justify-between h-80 shadow-xl"
-            >
-              <h3 className="text-lg font-medium text-gray-700">
-                Projects delivered
-              </h3>
-              <div>
-                <div className="text-7xl font-bold mb-2">
-                  <Counter end={100} suffix="+" />
-                </div>
-                <p className="text-gray-600 text-right leading-relaxed">
-                  Creative
-                  <br />
-                  solutions built
-                  <br />
-                  with purpose.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* BRANDS TRANSFORMED */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="bg-white/30 backdrop-blur-xl border border-white/20 rounded-3xl p-8 flex flex-col justify-between h-80 shadow-xl"
-            >
-              <h3 className="text-lg font-medium text-gray-700">
-                Brands transformed
-              </h3>
-              <div>
-                <div className="text-7xl font-bold mb-2">
-                  <Counter end={86} suffix="+" />
-                </div>
-                <p className="text-gray-600 text-right leading-relaxed">
-                  From strategy to
-                  <br />
-                  standout visuals.
-                </p>
-              </div>
-            </motion.div>
-          </div>
-        </div>
+        <StatsSection />
       </div>
 
-      <style jsx>{`
+      {/* Make animation rules global so child components pick them up */}
+      <style jsx global>{`
         @keyframes fadeInUp {
           from {
             opacity: 0;
@@ -486,7 +694,43 @@ export default function About() {
             transform: translateX(0);
           }
         }
+
+        /* Scrolling background for doubled content (hero) */
+        @keyframes scroll-left-2x {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+
+        /* Scrolling for tripled content (logo carousel) */
+        @keyframes scroll-left-3x {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-33.3333%);
+          }
+        }
+
+        .animate-scroll-left {
+          animation: scroll-left-2x 30s linear infinite;
+          will-change: transform;
+        }
+
+        .animate-scroll-left-fast {
+          animation: scroll-left-3x 16s linear infinite;
+          will-change: transform;
+        }
       `}</style>
+
+      <main className="min-h-screen bg-white">
+        <HeroSection images={staffs} />
+        <LogoCarousel logos={logos} />
+      </main>
+      
     </section>
   );
 }
