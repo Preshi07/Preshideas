@@ -8,9 +8,42 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 import Counter from "../component/counter";
 import { Button } from "@/components/ui/button";
+import UniqueApproachSection from "../component/IntroApproachSection";
+import TestimonialGallery from "../component/Client";
+import NewsSection from "../component/newsSection"; 
+
+// Animation variants for sections and items
+const sectionVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { staggerChildren: 0.06, when: "beforeChildren" },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
+};
+
+const badgeVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    transition: { type: "spring", stiffness: 300, damping: 22 },
+  },
+};
 
 interface HeroSectionProps {
-  images: (string | { src: string; alt?: string })[];
+  staffs: {
+    src: string;
+    alt?: string;
+    name?: string;
+    role?: string;
+    bio?: string;
+  }[];
 }
 interface LogoCarouselProps {
   logos: { src: string; alt: string }[];
@@ -30,24 +63,59 @@ interface StatItemProps {
 const staffs = [
   {
     src: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=1200&q=80",
-    alt: "Staff Member 1",
+    alt: "Precious Iheanacho",
+    name: "Precious Iheanacho",
+    role: "Founder & CEO",
+    bio: "B2B & Saas Writer | Content Marketing | Workflow Automation — 7+ years building brands.",
   },
   {
     src: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80",
-    alt: "Staff Member 2",
+    alt: "Carlos Nguyen",
+    name: "Carlos Nguyen",
+    role: "Head of Strategy",
+    bio: "Turns insight into clear growth plans and measurable outcomes.",
   },
   {
     src: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80",
-    alt: "Staff Member 3",
+    alt: "Maya Patel",
+    name: "Maya Patel",
+    role: "Creative Director",
+    bio: "Design lead crafting stories and visual systems that scale.",
   },
   {
     src: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80",
-    alt: "Staff Member 4",
+    alt: "Seidu Tesleem",
+    name: "Seidu Tesleem",
+    role: "Devloper",
+    bio: "Builds reliable experiences and automations that keep teams moving.",
+  },
+];
+
+const testimonials = [
+  {
+    quote:
+      "We are a proud partner of Preshideas. They've delivered tangible organic results across Europe and gone above and beyond using creativity for holistic impact.",
+    author: "Tim Giles",
+    role: "Head of SEO, JD Sports",
+    image:
+      "https://images.unsplash.com/photo-1606813902781-82e6937f1f49?auto=format&fit=crop&w=1600&q=80",
+    profile:
+      "https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=200&q=80",
+  },
+  {
+    quote:
+      "Preshideas' creative approach to SEO and PR brought immense value and fueled digital growth for our brand.",
+    author: "Matt Holmes",
+    role: "Head of Digital, PLT",
+    image:
+      "https://images.unsplash.com/photo-1616628198927-38f91f48d09e?auto=format&fit=crop&w=1600&q=80",
+    profile:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
   },
 ];
 
 const logos = [
-  { src: "/logos/logo1.png", alt: "Logo 1" },
+  { src: "/logos/ecosatisfaction.png", alt: "Logo 1" },
   { src: "/logos/logo2.png", alt: "Logo 2" },
   { src: "/logos/logo3.png", alt: "Logo 3" },
   { src: "/logos/logo4.png", alt: "Logo 4" },
@@ -55,6 +123,35 @@ const logos = [
   { src: "/logos/logo6.png", alt: "Logo 6" },
 ];
 
+const cards=[
+    {
+      category: "Technology",
+      image: "/article1.jpg",
+      imageAlt: "Tech article",
+      authors: [{ name: "John Doe", avatar: "/john.jpg" }],
+      readTime: "5 min",
+      title: "The Future of AI",
+      link: "/blog/ai-future"
+    },
+    {
+      category: "Design",
+      image: "/article2.jpg",
+      imageAlt: "Design article",
+      authors: [{ name: "Jane Smith" }],
+      readTime: "3 min",
+      title: "Modern UI Trends",
+      link: "/blog/ui-trends"
+    },
+    {
+      category: "Design",
+      image: "/article2.jpg",
+      imageAlt: "Design article",
+      authors: [{ name: "Jane Smith" }],
+      readTime: "3 min",
+      title: "Modern UI Trends",
+      link: "/blog/ui-trends"
+    }
+  ]
 function ParallaxImage({ className }: ParallaxImageProps) {
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -105,11 +202,11 @@ const ScrollingBackground = ({ images }: ScrollingBackgroundProps) => {
   );
 };
 
-const HeroSection = ({ images }: HeroSectionProps) => {
+const HeroSection = ({ staffs }: HeroSectionProps) => {
   return (
     <section className="relative min-h-screen h-screen w-full overflow-hidden bg-gradient-to-b from-gray-50 to-white">
       {/* Scrolling Background Images */}
-      <ScrollingBackground images={images} />
+      <ScrollingBackground images={staffs} />
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" />
@@ -153,6 +250,114 @@ const LogoCarousel = ({ logos }: LogoCarouselProps) => {
         ))}
       </div>
     </div>
+  );
+};
+
+const TeamSection = ({
+  staffs,
+}: {
+  staffs: {
+    src: string;
+    alt?: string;
+    name?: string;
+    role?: string;
+    bio?: string;
+  }[];
+}) => {
+  const featured = staffs && staffs.length ? staffs[0] : null;
+  const others = staffs && staffs.length > 1 ? staffs.slice(1) : [];
+
+  return (
+    <section className="relative w-full bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-800">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+
+      <div className="relative z-10 max-w-8xl mx-auto px-6 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          {/* Featured profile - left */}
+          <motion.div
+            className="md:col-span-7"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="bg-white/6 backdrop-blur-sm border border-white/10 rounded-3xl p-8 flex flex-col md:flex-row gap-6 items-center">
+              <div className="w-full md:w-1/2 flex items-center justify-center">
+                <div className="w-56 h-56 md:w-72 md:h-72 rounded-2xl overflow-hidden shadow-lg ring-1 ring-white/20">
+                  {featured ? (
+                    <img
+                      src={featured.src}
+                      alt={featured.alt ?? featured.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200" />
+                  )}
+                </div>
+              </div>
+
+              <div className="w-full md:w-1/2 text-left text-white">
+                <h2 className="text-3xl font-bold mb-2">
+                  {featured?.name ?? "Our Lead"}
+                </h2>
+                <p className="text-sm text-white/80 mb-4">
+                  {featured?.role ?? "Lead"}
+                </p>
+
+                <p className="text-sm text-white/80 leading-relaxed mb-6">
+                  {featured?.bio ??
+                    "Experienced leader driving strategy and delivery."}
+                </p>
+
+                <div className="flex items-center gap-3">
+                  <Button className="bg-black text-white px-5 py-2 rounded-full">
+                    Contact
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="text-white/90 border border-white/10 px-4 py-2 rounded-full"
+                  >
+                    View All
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Other profiles - right */}
+          <motion.div
+            className="md:col-span-5"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.12 }}
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {others.map((s: any, idx: number) => (
+                <motion.div
+                  key={idx}
+                  className="bg-white/6 backdrop-blur-sm border border-white/8 rounded-2xl p-3 flex items-start gap-3 hover:shadow-lg transition-transform"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                    <img
+                      src={s.src}
+                      alt={s.alt ?? s.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="text-white text-left">
+                    <div className="font-semibold">{s.name ?? s.alt}</div>
+                    <div className="text-xs text-white/80">{s.role}</div>
+                    <div className="text-xs text-white/70 mt-1">{s.bio}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
   );
 };
 
@@ -377,6 +582,10 @@ export default function About() {
     "Smart solutions, tailored for you",
   ];
 
+  // Provide local references in case any legacy markup references them
+  const featured = staffs && staffs.length ? staffs[0] : null;
+  const others = staffs && staffs.length > 1 ? staffs.slice(1) : [];
+
   return (
     <section className="relative w-full bg-white overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-8 lg:px-16 py-16 relative z-10">
@@ -539,9 +748,19 @@ export default function About() {
             <span>Not just another agency</span>
           </div>
         </motion.div>
+      </div>
 
+      <div className="min-h-screen bg-white">
+        <HeroSection staffs={staffs} />
+        <LogoCarousel logos={logos} />
+        <TeamSection staffs={staffs} />
+      </div>
+
+      <StatsSection />
+
+      <div className="max-w-[1400px] mx-auto px-8 lg:px-16 py-16 relative z-10">
         <motion.div
-          className="text-right mb-20"
+          className="text-right mb-6"
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -555,120 +774,142 @@ export default function About() {
           </h1>
         </motion.div>
 
-        <div className="grid lg:grid-cols-12 gap-12 mb-16">
-          {/* Left Column - Image Card */}
-          <motion.div
-            className="lg:col-span-4 relative rounded-3xl overflow-hidden bg-black h-[500px]"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            whileHover={{ scale: 1.02 }}
-          >
-            <img
-              src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=1000&fit=crop"
-              alt="Team collaboration"
-              className="w-full h-full object-cover opacity-50"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-            <motion.div
-              className="absolute bottom-10 left-10 right-10 text-white"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              <p className="text-xl mb-8 leading-relaxed font-light">
-                Every great project begins with a simple conversation — let's
-                start yours.
-              </p>
-              <div className="border-t border-white/30 pt-6">
-                <p className="text-base">
-                  <span className="font-bold">Amanda</span>{" "}
-                  <span className="text-white/70">Founder & CEO</span>
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
+        <UniqueApproachSection
+          sectionLabel="Who we are"
+          heading="Our Philosophy"
+          intro="Presh Ideas is a strategic content, digital PR, SEO, and automation agency helping brands communicate better, strengthen authority, and scale with clarity. We believe growth shouldn’t depend on guesswork. It should come from strong messaging, structured visibility, and the right systems working behind the scenes."
+          images={[
+            { url: "/about1.jpg", alt: "Our team" },
+            { url: "/about2.jpg", alt: "Our office" },
+          ]}
+          strategies={[
+            {
+              bold: "Clarity:",
+              description: "Because people only buy what they understand.",
+            },
+            {
+              bold: "Credibility:",
+              description: "Because trust drives decisions.",
+            },
+            {
+              bold: "Consistency:",
+              description: "Because visibility compounds.",
+            },
+            {
+              bold: "Efficiency:",
+              description: "Because automation scales what works.",
+            },
+          ]}
+          footerText="Our work blends storytelling, organic growth, and smart systems to help you grow sustainably."
+          ctaText="Learn More"
+          ctaLink="/about"
+        />
 
-          {/* Right Columns - Mission & Goals */}
-          <div className="lg:col-span-8 grid lg:grid-cols-2 gap-12">
-            {/* Mission */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <h2 className="text-3xl font-bold mb-6 text-black">
-                Our mission
-              </h2>
-              <p className="text-gray-600 text-base leading-relaxed">
-                To empower brands through{" "}
-                <span className="font-semibold text-black">bold design</span>,{" "}
-                <span className="font-semibold text-black">
-                  strategic thinking
-                </span>
-                , and{" "}
-                <span className="font-semibold text-black">
-                  digital experiences
-                </span>{" "}
-                that inspire action and create lasting impact. To help{" "}
-                <span className="font-semibold text-black">businesses</span>{" "}
-                stand out through thoughtful branding and{" "}
-                <span className="font-semibold text-black">
-                  high-performance digital solutions
-                </span>{" "}
-                rooted in creativity and clarity.
-              </p>
+        <UniqueApproachSection
+          // sectionLabel="Who we are"
+          heading="Our Story"
+          intro="Presh Ideas was built on a simple observation: Most brands are doing too much and achieving too little—because their message is unclear and their systems aren’t working. <br/> Instead of offering scattered marketing services, we created an integrated approach combining:"
+          images={[
+            { url: "/about1.jpg", alt: "Our team" },
+            { url: "/about2.jpg", alt: "Our office" },
+          ]}
+          strategies={[
+            {
+              description: "Content strategy",
+            },
+            {
+              description: "SEO",
+            },
+            {
+              description: "Digital PR",
+            },
+            {
+              description: "Growth systems",
+            },
+            {
+              description: "Workflow automation & AI",
+            },
+          ]}
+          footerText="This lets businesses build real authority, not temporary attention."
+          ctaText="Learn More"
+          ctaLink="/about"
+        />
 
-              {/* CTA Button */}
-              <motion.button
-                className="bg-black text-white px-8 py-4 rounded-full flex items-center gap-3 mt-8"
-                whileHover={{ scale: 1.05, backgroundColor: "#1f1f1f" }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.2 }}
+        {/* Dedicated Mission / Vision / Core Values section (two-column, matching other visuals) */}
+        <motion.section
+          className="mb-20"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="max-w-7xl mx-auto rounded-2xl p-8">
+            <div className="grid gap-8 lg:grid-cols-2 items-center bg-white rounded-2xl shadow-sm overflow-hidden">
+              <motion.div
+                className="p-8"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
               >
-                Meet our team
-                <motion.span
-                  className="text-xl"
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  →
-                </motion.span>
-              </motion.button>
-            </motion.div>
+                <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
+                <p className="text-gray-700 mb-6 leading-relaxed">
+                  To empower brands with powerful communication, intentional
+                  visibility, and sustainable growth systems.
+                </p>
 
-            {/* Goals */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              <h2 className="text-3xl font-bold mb-6 text-black">Our goal</h2>
-              <ul className="space-y-4">
-                {goals.map((goal, index) => (
-                  <motion.li
-                    key={index}
-                    className="flex items-start gap-3 text-base text-gray-600"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-                    whileHover={{ x: 5 }}
-                  >
-                    <span className="text-black font-bold mt-0.5">•</span>
-                    <span>{goal}</span>
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
+                <h2 className="text-3xl font-bold mb-4">Our Vision</h2>
+                <p className="text-gray-700 mb-6 leading-relaxed">
+                  To become the most trusted partner for clarity-driven content,
+                  organic brand visibility, and AI-powered digital
+                  transformation.
+                </p>
+              </motion.div>
+
+              <motion.div
+                className="p-8 border-l border-gray-100 flex flex-col justify-between"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.05 }}
+              >
+                <div>
+                  <h3 className="text-xl font-semibold mb-4">
+                    Our Core Values
+                  </h3>
+                  <div className="flex flex-wrap gap-3">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm">
+                      Clarity
+                    </span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm">
+                      Credibility
+                    </span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm">
+                      Insight
+                    </span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm">
+                      Consistency
+                    </span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm">
+                      Innovation
+                    </span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm">
+                      Integrity
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <Button className="bg-black text-white px-6 py-3 rounded-full">
+                    Work With Us
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
           </div>
-        </div>
+        </motion.section>
 
-        <StatsSection />
+        
       </div>
 
       {/* Make animation rules global so child components pick them up */}
@@ -726,11 +967,21 @@ export default function About() {
         }
       `}</style>
 
-      <main className="min-h-screen bg-white">
-        <HeroSection images={staffs} />
-        <LogoCarousel logos={logos} />
-      </main>
-      
+      <TestimonialGallery
+              title="Trusted by"
+              highlight="industry"
+              suffix="leaders"
+              gallery={testimonials as any}
+              interval={7000}
+            />
+
+            <NewsSection 
+  heading="Latest Articles"
+  headingImage={{ url: "/blog-icon.jpg", alt: "Blog" }}
+  ctaText="View All Posts"
+  ctaLink="/blog"
+  cards={cards}
+/>
     </section>
   );
 }
