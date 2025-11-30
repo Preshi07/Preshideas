@@ -41,7 +41,7 @@ export default function Service() {
             </h1>
           </div>
           <a
-            href="#all-services"
+            href="services"
             className="bg-white px-6 py-3 md:px-8 md:py-4 rounded-full shadow-md border border-gray-200 font-medium text-base md:text-lg text-black hover:bg-gray-100 transition whitespace-nowrap flex items-center"
           >
             View All Services <span className="ml-2">→</span>
