@@ -128,9 +128,6 @@ export default function Navbar() {
             <Link href="/work">Work</Link>
           </li>
           <li>
-            <Link href="/careers">Careers</Link>
-          </li>
-          <li>
             <Link href="/blog">Blog</Link>
           </li>
           <li>
@@ -331,11 +328,6 @@ export default function Navbar() {
                 <li>
                   <Link href="/work" onClick={() => setIsOpen(false)}>
                     Work
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/careers" onClick={() => setIsOpen(false)}>
-                    Careers
                   </Link>
                 </li>
                 <li>

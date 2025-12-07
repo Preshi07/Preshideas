@@ -53,10 +53,10 @@ export default function Hero() {
         </motion.div>
 
         <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight drop-shadow-md">
-          We Create
+          Be Seen
           <br />
           <span className="inline-flex items-center">
-            Category
+            Be trusted
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -71,7 +71,7 @@ export default function Hero() {
                 className="rounded-lg sm:w-[60px] sm:h-[60px] md:w-[70px] md:h-[70px]"
               />
             </motion.div>
-            Leaders
+            Be Unforgettable
           </span>
         </h1>
 
@@ -86,9 +86,8 @@ export default function Hero() {
 
         <div className="absolute bottom-4 left-4 right-4 flex flex-col sm:flex-row sm:justify-between gap-3 text-xs sm:text-sm text-gray-300">
           <div className="text-left sm:max-w-xs">
-            Organic media planners creating, distributing & optimising{" "}
-            <span className="font-bold">search-first content</span> for SEO,
-            Social, PR
+            Helping brands communicate{" "}
+            <span className="font-bold">better and grow</span> Smarter.
           </div>
           {/* <div className="text-right">
             4 Global Offices serving <br /> NIGERIA
