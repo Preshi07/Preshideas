@@ -758,7 +758,7 @@ export default function About() {
 
       <StatsSection />
 
-      <div className="max-w-[1400px] mx-auto px-8 lg:px-16 py-16 relative z-10">
+     {/* <div className="max-w-[1400px] mx-auto px-8 lg:px-16 py-16 relative z-10">*/}
         <motion.div
           className="text-right mb-6"
           initial={{ opacity: 0, x: 50 }}
@@ -909,8 +909,9 @@ export default function About() {
           </div>
         </motion.section>
 
-        
+        {/*
       </div>
+        */}
 
       {/* Make animation rules global so child components pick them up */}
       <style jsx global>{`
