@@ -29,14 +29,14 @@ const works = [
   {
     title: "Digital Experience",
     years: "2024–2025",
-    img: "/seo.jpg",
+    img: "/Digital.jpg",
     description: "Crafting engaging digital experiences",
     tags: ["UX", "Design", "Development"],
   },
   {
     title: "Product Strategy",
     years: "2024",
-    img: "/seo.jpg",
+    img: "/product.jpg",
     description: "Building products that users love",
     tags: ["Strategy", "Product", "Growth"],
   },
