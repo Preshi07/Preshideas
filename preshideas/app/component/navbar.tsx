@@ -6,10 +6,12 @@ import Image from "next/image";
 import { X, Menu, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
+ 
 
   useEffect(() => {
     const handleScroll = () => {
@@ -355,6 +357,8 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      
     </>
   );
 }
