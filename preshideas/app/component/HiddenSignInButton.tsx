@@ -1,11 +1,13 @@
 "use client";
 
+type ViewType = "post" | "admin" | "login" | "home";
+
 export default function HiddenSignInButton({
   isAuthenticated,
   setView,
 }: {
   isAuthenticated: boolean;
-  setView: (view: string) => void;
+  setView: React.Dispatch<React.SetStateAction<ViewType>>;
 }) {
   if (isAuthenticated) return null;
 
