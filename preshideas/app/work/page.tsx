@@ -162,7 +162,7 @@ const CaseStudiesSection: React.FC<CaseStudiesSectionProps> = ({
   const [selectedType, setSelectedType] = useState("all");
 
   return (
-    <section className="py-12 md:py-20 px-4 sm:px-6 md:px-8 lg:px-12 bg-background">
+    <section className="py-12 md:py-40 px-4 sm:px-6 md:px-8 lg:px-12 bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 md:mb-16">
