@@ -1,43 +1,40 @@
 "use client";
 
-import { motion, useAnimation, Variants } from "framer-motion";
+import React, { useRef, useState, useEffect } from "react";
+import { motion, Variants, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { useRef, useState, useEffect } from "react";
-import { Pause, Play, ArrowRight } from "lucide-react";
-import TestimonialGallery from "../component/Client";
-import FAQSection from "../component/FAQ";
-// import PortfolioSection from "../component/portfolio";
+import { 
+  Pause, 
+  Play, 
+  ArrowRight, 
+  ArrowUpRight, 
+  TrendingUp, 
+  Users, 
+  Target 
+} from "lucide-react";
 
-// Define interfaces and types
+// You can keep these imports if you have separate files, 
+// but I have defined the FAQ section inline below to ensure it works standalone.
+// import FAQSection from "../component/FAQ"; 
+
+// --- TYPES ---
 interface Card {
   title: string;
   desc?: string;
   description?: string;
   image: string;
+  category?: string;
 }
 
-type Slide = {
+interface Slide {
   title: string;
   category: string;
   image: string;
-};
-
-type CounterProps = {
-  from: number;
-  to: number;
-  duration?: number;
-  suffix?: string;
-  prefix?: string;
-};
+}
 
 interface Logo {
   name: string;
   img: string;
-}
-
-interface ImageSlide {
-  url: string;
-  alt: string;
 }
 
 interface Strategy {
@@ -46,649 +43,672 @@ interface Strategy {
   description: string;
 }
 
-type PortfolioSlide = {
+interface PortfolioSlide {
   title: string;
   description?: string;
   phone?: React.ReactNode;
-};
-
-type PortfolioSectionProps = {
-  heading?: string;
-  subheading?: string;
-  slides?: PortfolioSlide[];
-  interval?: number;
-};
-
-interface UniqueApproachSectionProps {
-  sectionLabel?: string;
-  heading?: string;
-  subheading?: string;
-  images?: ImageSlide[];
-  strategies?: Strategy[];
-  footerText?: string;
-  ctaText?: string;
-  ctaLink?: string;
-  slideInterval?: number;
-  transitionDuration?: number;
 }
 
-type FAQ = {
-  question: string;
-  answer: string;
-};
+interface ImageSlide {
+  url: string;
+  alt: string;
+}
 
-type FAQSectionProps = {
-  title?: string;
-  faqs?: FAQ[];
-};
+// --- CONSTANTS & DATA ---
+const BRAND_GRADIENT = "bg-gradient-to-r from-[#00C96D] via-[#00B5D1] to-[#2D79FF]";
+const TEXT_GRADIENT = "bg-clip-text text-transparent bg-gradient-to-r from-[#00C96D] via-[#00B5D1] to-[#2D79FF]";
 
-// --- CONSTANTS ---
-const BRAND_GRADIENT =
-  "bg-gradient-to-r from-[#00C96D] via-[#00B5D1] to-[#2D79FF]";
-const TEXT_GRADIENT =
-  "bg-clip-text text-transparent bg-gradient-to-r from-[#00C96D] via-[#00B5D1] to-[#2D79FF]";
-
-const slides: Slide[] = [
-  {
-    title: "Travelista",
-    category: "Content Marketing",
-    image: "/others/team002.png",
-  },
-  {
-    title: "FitLife Studios",
-    category: "Social Media Marketing",
-    image: "/others/team0.png",
-  },
-  {
-    title: "FreshNest",
-    category: "Content Marketing",
-    image: "/others/team1.png",
-  },
-  {
-    title: "EcoKids",
-    category: "Content Marketing",
-    image: "/others/team00.png",
-  },
-  { title: "EcoWorld", category: "SEO Strategy", image: "/others/team01.png" },
+const SLIDES: Slide[] = [
+  { title: "Travelista", category: "Content Marketing", image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80" },
+  { title: "FitLife Studios", category: "Social Media", image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80" },
+  { title: "FreshNest", category: "Branding", image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80" },
+  { title: "EcoKids", category: "Sustainability", image: "https://images.unsplash.com/photo-1472289065668-ce650ac443d2?w=800&q=80" },
+  { title: "EcoWorld", category: "SEO Strategy", image: "https://images.unsplash.com/photo-1542601906990-b4d3fb7d5fa5?w=800&q=80" },
 ];
 
-const portfolioSlides = [
+const PORTFOLIO_SLIDES = [
   {
     title: "Presh-Ideas Everywhere",
-    description:
-      "Sometimes, just going to press with a story or hook isn't enough to drive demand at scale...",
+    description: "Sometimes, just going to press with a story or hook isn't enough to drive demand at scale...",
+    // Just the SCREEN CONTENT (the black background and icon), no borders or rounded corners
     phone: (
-      <div className="relative w-64 h-[550px] bg-black rounded-[3rem] shadow-2xl overflow-hidden border-8 border-gray-800">
-        <div className="absolute inset-0 bg-black flex items-center justify-center">
-          <svg
-            className="w-16 h-16 text-white"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
-          </svg>
+      <div className="w-full h-full bg-black flex items-center justify-center relative">
+        <div className="text-center">
+           {/* TikTok-ish Icon */}
+           <svg className="w-20 h-20 text-white mx-auto mb-4" viewBox="0 0 24 24" fill="currentColor">
+             <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+           </svg>
+           <p className="text-white text-lg font-bold">TikTok Trend</p>
         </div>
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
-          <p className="text-white text-sm font-medium">TikTok</p>
+        {/* Optional UI elements to make it look like an app */}
+        <div className="absolute bottom-10 left-0 right-0 flex justify-around px-8">
+           <div className="w-8 h-8 bg-gray-800 rounded-full"></div>
+           <div className="w-8 h-8 bg-gray-800 rounded-full"></div>
+           <div className="w-12 h-12 bg-white rounded-full -mt-2"></div>
+           <div className="w-8 h-8 bg-gray-800 rounded-full"></div>
+           <div className="w-8 h-8 bg-gray-800 rounded-full"></div>
         </div>
       </div>
     ),
   },
   {
     title: "Presh-Ideas Live",
-    description:
-      "We help brands capture real-time moments and turn them into lasting impact through rapid response strategies and live activation.",
+    description: "We help brands capture real-time moments and turn them into lasting impact through rapid response strategies.",
+    // Just the SCREEN CONTENT
     phone: (
-      <div className="relative w-64 h-[550px] bg-red-600 rounded-[3rem] shadow-2xl overflow-hidden border-8 border-black">
-        <div className="absolute inset-0 bg-red-600 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-white text-4xl font-bold mb-2">BBC</div>
-            <div className="text-white text-2xl font-bold tracking-wider">
-              NEWS
-            </div>
-          </div>
+      <div className="w-full h-full bg-red-600 flex items-center justify-center">
+        <div className="text-center text-white">
+          <div className="text-5xl font-bold mb-2">BBC</div>
+          <div className="text-2xl font-bold tracking-[0.2em] bg-white text-red-600 px-2 py-1">NEWS</div>
+          <div className="mt-8 text-sm font-medium opacity-80 uppercase tracking-widest">Live Coverage</div>
         </div>
       </div>
     ),
   },
 ];
 
-const cards: Card[] = [
+const LOGOS: Logo[] = [
+  { name: "Business Insider", img: "https://logo.clearbit.com/businessinsider.com" },
+  { name: "Washington Post", img: "https://logo.clearbit.com/washingtonpost.com" },
+  { name: "Daily Mail", img: "https://logo.clearbit.com/dailymail.co.uk" },
+  { name: "Vogue", img: "https://logo.clearbit.com/vogue.com" },
+  { name: "Forbes", img: "https://logo.clearbit.com/forbes.com" },
+  { name: "TechCrunch", img: "https://logo.clearbit.com/techcrunch.com" },
+];
+
+const CARDS: Card[] = [
   {
-    title: "Keyword Universe & Search Journeys",
-    desc: "We integrate audience insight into keyword journeys and map out full paths from trigger to purchase.",
-    image: "/hero3.png",
+    category: "Media",
+    title: "Press Office",
+    image: "https://images.unsplash.com/photo-1586281380384-e5d43616b9aa?w=800&q=80",
+    description: "Professional media relations and press coverage management.",
   },
   {
-    title: "Content Strategy",
-    desc: "Craft stories and campaigns that convert through creative data-driven insight.",
-    image: "/seo.jpg",
+    category: "Education",
+    title: "Digital PR Training",
+    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
+    description: "We share what we know. We train teams to lead Digital PR innovation.",
   },
   {
-    title: "Creative Positioning & Brand Strategy Playbooks",
-    desc: "Define your visual and narrative identity that resonates with your audience.",
-    image: "/hero1.png",
+    category: "Analytics",
+    title: "Data Reports",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+    description: "In-depth market research and comprehensive data analysis.",
   },
   {
-    title: "Audience Modelling",
-    desc: "Build synthetic audiences to test creative performance and engagement at scale.",
-    image: "/hero0.jpg",
+    category: "Strategy",
+    title: "Creative Campaigns",
+    image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&q=80",
+    description: "Innovative marketing strategies that capture attention.",
+  },
+  {
+    category: "Branding",
+    title: "Brand Strategy",
+    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
+    description: "Comprehensive brand development and positioning strategies.",
   },
 ];
 
-const faqs = [
-  {
-    question: "How many people are in the Digital PR team?",
-    answer:
-      "Our Digital PR team consists of a mix of strategists, creatives, and outreach specialists who collaborate to deliver impactful campaigns.",
-  },
-  {
-    question: "How do you work with traditional PR teams?",
-    answer:
-      "We complement traditional PR teams by integrating digital insights and SEO strategies to maximize campaign reach and measurable impact.",
-  },
-  {
-    question: "What kind of results should be expected from Digital PR?",
-    answer:
-      "Expect measurable results like backlinks, brand mentions, referral traffic, and improvements in search visibility and authority.",
-  },
-  {
-    question: "How much does Digital PR cost?",
-    answer:
-      "Our pricing depends on campaign scope, goals, and duration — we tailor our approach to match your brand’s needs and scale.",
-  },
-  {
-    question: "What key metrics do you report on for Digital PR?",
-    answer:
-      "We focus on metrics such as backlinks, domain authority improvements, organic traffic growth, and coverage across relevant publications.",
-  },
-  {
-    question:
-      "What do you do if Digital PR isn't driving organic growth/traffic?",
-    answer:
-      "We re-evaluate your strategy using analytics data, identify content gaps, and adjust our campaign focus to maximize performance.",
-  },
-  {
-    question:
-      "How fast can we see the impact of Digital PR and get results/coverage?",
-    answer:
-      "Results can start appearing within weeks, but long-term visibility and SEO authority build progressively with consistent campaigns.",
-  },
-  {
-    question: "What if we can't be super fast or work in a regulated industry?",
-    answer:
-      "We adapt our campaign approach to comply with regulations while still finding creative opportunities to earn media and backlinks.",
-  },
-  {
-    question: "How long does it take to run a digital PR campaign?",
-    answer:
-      "Typically, campaigns run for 3–6 months depending on goals, content development, and outreach scope.",
-  },
-  {
-    question: "Do you do Digital PR training for inhouse brands?",
-    answer:
-      "Yes, we provide tailored training sessions to help inhouse teams understand digital PR principles, tools, and execution best practices.",
-  },
+const FAQS = [
+  { question: "How many people are in the Digital PR team?", answer: "Our Digital PR team consists of a mix of strategists, creatives, and outreach specialists." },
+  { question: "How do you work with traditional PR teams?", answer: "We complement traditional PR teams by integrating digital insights and SEO strategies." },
+  { question: "How much does Digital PR cost?", answer: "Our pricing depends on campaign scope, goals, and duration tailored to your needs." },
+  { question: "How fast can we see results?", answer: "Results can start appearing within weeks, but long-term visibility builds progressively." },
 ];
 
-const logos = [
-  "/logos/google.png",
-  "/logos/bing.png",
-  "/logos/youtube.png",
-  "/logos/snapchat.png",
-  "/logos/linkedin.png",
-  "/logos/pinterest.png",
+const APPROACH_IMAGES = [
+  { url: "https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?w=800&h=900&fit=crop", alt: "Strategy" },
+  { url: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&h=900&fit=crop", alt: "Digital" },
+  { url: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=900&fit=crop", alt: "Team" },
 ];
 
-// Smooth numeric counter (tweened)
-const Counter = ({
-  from,
-  to,
-  duration = 1.6,
-  suffix = "",
-  prefix = "",
-}: CounterProps) => {
+const STRATEGIES = [
+  { title: "PUSH", color: "blue", description: "You nearly always have a brand or product message you want to push to the world through PR and Media. Our push strategies include product PR, press office, data reports and studies." },
+  { title: "PULL", color: "cyan", description: "Alongside this, we have an always-on pull strategy, pulling you into media moments that are happening. We track the media so you don't have to, reacting with products, commentary or data." },
+  { title: "POW", color: "purple", description: "And finally, pow moments. You can't lead a category without creating PR work people remember. We run bimonthly, quarterly or biannually PR campaigns, often tied with social and creators." },
+];
+
+// --- HELPER COMPONENTS ---
+
+const Counter = ({ from, to, duration = 1.6, suffix = "", prefix = "" }: { from: number; to: number; duration?: number; suffix?: string; prefix?: string }) => {
   const [value, setValue] = useState(from);
-  const rafRef = useRef<number | null>(null);
-  const startRef = useRef<number | null>(null);
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
-    startRef.current = null;
-    const step = (t: number) => {
-      if (startRef.current === null) startRef.current = t;
-      const progress = Math.min((t - startRef.current) / (duration * 1000), 1);
-      const current = Math.round(from + (to - from) * progress);
-      setValue(current);
-      if (progress < 1) rafRef.current = requestAnimationFrame(step);
+    if (!isInView) return;
+    let startTime: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+      setValue(Math.floor(from + (to - from) * progress));
+      if (progress < 1) requestAnimationFrame(step);
     };
-    rafRef.current = requestAnimationFrame(step);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [from, to, duration]);
+    requestAnimationFrame(step);
+  }, [isInView, from, to, duration]);
 
   return (
-    <span className="inline-flex items-baseline gap-1">
+    <span ref={ref} className="inline-flex items-baseline gap-1">
       <span className="text-indigo-400 font-medium">{prefix}</span>
-      <span className="text-4xl md:text-5xl font-extrabold text-gray-900">
-        {value}
-      </span>
+      <span className="text-4xl md:text-5xl font-extrabold text-white">{value}</span>
       <span className="text-indigo-400 font-medium">{suffix}</span>
     </span>
   );
 };
 
-const containerVariants: Variants = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
+// --- SECTION COMPONENTS ---
 
-const cardVariant: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-};
+const ImpactSection = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-const MetricsSection = () => {
   return (
-    <section className="py-16 md:py-24">
-      <div className="max-w-8xl mx-auto px-4 sm:px-6">
-        <motion.div
-          className="bg-gradient-to-br from-accent/5 via-background to-accent/10 rounded-3xl 
-                     p-8 md:p-16 border border-accent/10 backdrop-blur-sm"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-        >
-          {/* Metrics Counters */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 md:gap-16 items-center text-center md:text-left mb-12">
-            <div className="flex flex-col items-center md:items-start gap-3">
-              <Counter from={0} to={100} suffix="m" prefix="$" />
-              <p className="text-sm text-muted-foreground">Incremental value</p>
+    <section className="py-24 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <motion.div
+        ref={ref}
+        initial={{ opacity: 0, y: 40 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="relative bg-[#0F1115] text-white rounded-[3rem] overflow-hidden p-8 md:p-16 border border-white/10 shadow-2xl"
+      >
+        <div className="absolute inset-0 opacity-[0.07]" 
+             style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} 
+        />
+        <div className="relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 border-b border-white/10 pb-12 mb-12">
+            <div className="md:pr-12 md:border-r border-white/10 flex flex-col gap-4">
+              <div className="flex items-center gap-2 text-white/50 mb-2">
+                <TrendingUp className="w-4 h-4" />
+                <span className="text-xs uppercase tracking-widest font-semibold">Value Generated</span>
+              </div>
+              <Counter from={0} to={100} prefix="$" suffix="m" />
+              <p className="text-sm text-white/40 leading-relaxed">Incremental revenue generated for our partners.</p>
             </div>
-
-            <div className="flex flex-col items-center md:items-start gap-3">
+            <div className="md:px-12 md:border-r border-white/10 flex flex-col gap-4">
+              <div className="flex items-center gap-2 text-white/50 mb-2">
+                <Users className="w-4 h-4" />
+                <span className="text-xs uppercase tracking-widest font-semibold">Expert Team</span>
+              </div>
               <Counter from={0} to={40} suffix="+" />
-              <p className="text-sm text-muted-foreground">
-                Strong organic team
-              </p>
+              <p className="text-sm text-white/40 leading-relaxed">Dedicated strategists & technical SEOs.</p>
             </div>
-
-            <div className="flex flex-col items-center md:items-start gap-3">
+            <div className="md:pl-12 flex flex-col gap-4">
+              <div className="flex items-center gap-2 text-white/50 mb-2">
+                <Target className="w-4 h-4" />
+                <span className="text-xs uppercase tracking-widest font-semibold">ROI Average</span>
+              </div>
               <Counter from={0} to={6} suffix="x" />
-              <p className="text-sm text-muted-foreground">
-                ROI avg from SEO investment
-              </p>
+              <p className="text-sm text-white/40 leading-relaxed">Average return on investment.</p>
             </div>
           </div>
-
-          {/* Main Text Content */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
             <div>
-              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight text-primary mb-6">
-                Grow visibility. Build trust. Win customers.{" "}
-                <span className="block text-accent">
-                  Unlock sustainable organic growth.
+              <h3 className="text-3xl md:text-5xl font-semibold leading-[1.1] tracking-tight text-white mb-6">
+                Grow visibility. <br/> 
+                Build trust. <br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+                  Win customers.
                 </span>
               </h3>
             </div>
-
-            <div className="text-foreground space-y-5 text-base leading-relaxed">
-              <p>
-                <span className="font-semibold text-primary">
-                  Your website is the first impression for Google
-                </span>{" "}
-                and the last impression for your customers — making it
-                absolutely essential.
-              </p>
-              <p>
-                Our SEO team has successfully guided over{" "}
-                <span className="font-semibold">200+ websites</span> in
-                expanding their organic presence. We build{" "}
-                <span className="font-semibold">crawlable, indexable</span>{" "}
-                websites and craft a{" "}
-                <span className="font-semibold">distinctive experience</span>.
-              </p>
-              <p>
-                We provide fully managed SEO that aligns with product strategy
-                and engineering, prioritising performance and search experience
-                optimisation.
-              </p>
-
-              <div className="mt-8 inline-flex items-center gap-3 bg-card border border-accent/20 px-5 py-3 rounded-full shadow-lg">
-                <span className="text-2xl">🏆</span>
-                <div className="text-xs">
-                  <div className="font-semibold text-primary">
-                    BEST LARGE SEARCH AGENCY
-                  </div>
-                  <div className="text-muted-foreground text-xs">
-                    GLOBAL SEARCH AWARDS
-                  </div>
+            <div className="space-y-8">
+              <div className="text-lg text-white/70 leading-relaxed space-y-6">
+                <p><strong className="text-white">Your website is the first impression for Google</strong> and the last impression for your customers.</p>
+                <p>We provide fully managed SEO that aligns with product strategy and engineering, prioritising performance.</p>
+              </div>
+              <div className="inline-flex items-center gap-4 bg-white/5 hover:bg-white/10 border border-white/10 px-6 py-4 rounded-2xl transition-colors cursor-default">
+                <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center border border-yellow-500/20 text-2xl">🏆</div>
+                <div>
+                  <div className="font-bold text-white tracking-wide text-sm">BEST LARGE SEARCH AGENCY</div>
+                  <div className="text-white/40 text-xs mt-0.5 font-medium tracking-widest uppercase">Global Search Awards</div>
                 </div>
               </div>
             </div>
           </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-// ===== Channels Section (Responsive Auto Slide) =====
-const Channels = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
-
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    let scrollSpeed = window.innerWidth < 640 ? 0.3 : 0.7; // slower on mobile
-    let scrollPos = 0;
-
-    const animate = () => {
-      if (!isPaused && container) {
-        scrollPos += scrollSpeed;
-        container.scrollLeft = scrollPos;
-
-        // reset when reaching the end
-        if (scrollPos >= container.scrollWidth / 2) {
-          scrollPos = 0;
-          container.scrollLeft = 0;
-        }
-      }
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, [isPaused]);
-
-  return (
-    <section className="mt-12">
-      <div className="max-w-8xl mx-auto px-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">
-          Featured In
-        </h2>
-        <div
-          ref={scrollRef}
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={() => setIsPaused(true)}
-          onTouchEnd={() => setIsPaused(false)}
-          className="flex gap-10 overflow-hidden"
-          style={{
-            scrollBehavior: "smooth",
-            WebkitOverflowScrolling: "touch",
-          }}
-        >
-          {[...logos, ...logos].map((src, i) => (
-            <div
-              key={i}
-              className="flex-shrink-0 w-36 h-14 bg-white/60 rounded-lg p-2 shadow-inner flex items-center justify-center"
-            >
-              <Image
-                src={src}
-                alt={`logo-${i}`}
-                width={140}
-                height={40}
-                className="object-contain"
-              />
-            </div>
-          ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
 
 const MultiSliderShowcase: React.FC = () => {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-  const logoScrollRef = useRef<HTMLDivElement>(null);
-  const cardScrollRef = useRef<HTMLDivElement>(null);
-  const logoAnimationRef = useRef<number | null>(null);
-  const cardAnimationRef = useRef<number | null>(null);
-
-  const logos: Logo[] = [
-    {
-      name: "Business Insider",
-      img: "https://logo.clearbit.com/businessinsider.com",
-    },
-    {
-      name: "Washington Post",
-      img: "https://logo.clearbit.com/washingtonpost.com",
-    },
-    { name: "Daily Mail", img: "https://logo.clearbit.com/dailymail.co.uk" },
-    { name: "Vogue", img: "https://logo.clearbit.com/vogue.com" },
-    { name: "People", img: "https://logo.clearbit.com/people.com" },
-    { name: "Forbes", img: "https://logo.clearbit.com/forbes.com" },
-    { name: "TechCrunch", img: "https://logo.clearbit.com/techcrunch.com" },
-    { name: "BBC", img: "https://logo.clearbit.com/bbc.com" },
-  ];
-
-  const cards: Card[] = [
-    {
-      title: "Press Office",
-      image:
-        "https://images.unsplash.com/photo-1586281380384-e5d43616b9aa?w=600&h=400&fit=crop",
-      description:
-        "Professional media relations and press coverage management. We handle all aspects of your brand's media presence.",
-    },
-    {
-      title: "Digital PR Training",
-      image:
-        "https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?w=600&h=400&fit=crop",
-      description:
-        "We share what we know - it's literally in our values. We train others in PR and Digital PR from Lush Cosmetics, to Hendricks Gin, and stand on stages at conferences like BrightonSEO to lead Digital PR innovation.",
-    },
-    {
-      title: "Data Reports and Studies",
-      image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
-      description:
-        "In-depth market research and comprehensive data analysis. We create detailed reports based on the online market share of each country.",
-    },
-    {
-      title: "Creative Campaigns",
-      image:
-        "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&h=400&fit=crop",
-      description:
-        "Innovative marketing strategies that capture attention and drive engagement across all digital platforms.",
-    },
-    {
-      title: "Brand Strategy",
-      image:
-        "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop",
-      description:
-        "Comprehensive brand development and positioning strategies that resonate with your target audience.",
-    },
-    {
-      title: "Content Marketing",
-      image:
-        "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop",
-      description:
-        "Engaging content creation that tells your story and builds meaningful connections with your audience.",
-    },
-  ];
-
-  // Duplicate arrays for seamless loop
-  const duplicatedLogos: Logo[] = [...logos, ...logos, ...logos];
-  const duplicatedCards: Card[] = [...cards, ...cards, ...cards];
-
-  useEffect(() => {
-    const logoContainer = logoScrollRef.current;
-    const cardContainer = cardScrollRef.current;
-
-    let logoScrollPosition = 0;
-    let cardScrollPosition = 0;
-
-    const animateLogos = (): void => {
-      if (logoContainer) {
-        logoScrollPosition += 1; // 1 pixel per frame for smooth 1sec speed
-
-        // Reset position for seamless loop
-        if (logoScrollPosition >= logoContainer.scrollWidth / 3) {
-          logoScrollPosition = 0;
-        }
-
-        logoContainer.scrollLeft = logoScrollPosition;
-      }
-      logoAnimationRef.current = requestAnimationFrame(animateLogos);
-    };
-
-    const animateCards = (): void => {
-      if (cardContainer) {
-        cardScrollPosition += 1; // 1 pixel per frame for smooth 1sec speed
-
-        // Reset position for seamless loop
-        if (cardScrollPosition >= cardContainer.scrollWidth / 3) {
-          cardScrollPosition = 0;
-        }
-
-        cardContainer.scrollLeft = cardScrollPosition;
-      }
-      cardAnimationRef.current = requestAnimationFrame(animateCards);
-    };
-
-    logoAnimationRef.current = requestAnimationFrame(animateLogos);
-    cardAnimationRef.current = requestAnimationFrame(animateCards);
-
-    return () => {
-      if (logoAnimationRef.current) {
-        cancelAnimationFrame(logoAnimationRef.current);
-      }
-      if (cardAnimationRef.current) {
-        cancelAnimationFrame(cardAnimationRef.current);
-      }
-    };
-  }, []);
-
-  const handleLogoMouseEnter = (): void => {
-    if (logoAnimationRef.current) {
-      cancelAnimationFrame(logoAnimationRef.current);
-    }
-  };
-
-  const handleLogoMouseLeave = (): void => {
-    const logoContainer = logoScrollRef.current;
-    if (!logoContainer) return;
-
-    let logoScrollPosition = logoContainer.scrollLeft;
-
-    const animateLogos = (): void => {
-      if (logoContainer) {
-        logoScrollPosition += 1;
-        if (logoScrollPosition >= logoContainer.scrollWidth / 3) {
-          logoScrollPosition = 0;
-        }
-        logoContainer.scrollLeft = logoScrollPosition;
-      }
-      logoAnimationRef.current = requestAnimationFrame(animateLogos);
-    };
-
-    logoAnimationRef.current = requestAnimationFrame(animateLogos);
-  };
+  const duplicatedLogos = [...LOGOS, ...LOGOS, ...LOGOS];
+  const duplicatedCards = [...CARDS, ...CARDS, ...CARDS];
 
   return (
-    <div className="min-h-screen bg-background py-12">
-      {/* Logo Slider Section */}
-      <div className="max-w-8xl mx-auto mb-16 px-4">
-        <div className="bg-card p-8 rounded-2xl border border-border">
-          <h2 className="text-2xl font-bold text-primary mb-8 text-center bg-gradient-to-r from-teal-500 via-green-500 to-blue-500 bg-clip-text text-transparent">
-            Featured In
-          </h2>
-
-          <div
-            ref={logoScrollRef}
-            className="overflow-hidden"
-            onMouseEnter={handleLogoMouseEnter}
-            onMouseLeave={handleLogoMouseLeave}
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            <div className="flex gap-16 w-max">
-              {duplicatedLogos.map((logo, idx) => (
-                <div
-                  key={idx}
-                  className="flex-shrink-0 flex items-center justify-center min-w-[180px]"
-                >
-                  <div className="grayscale hover:grayscale-0 transition-all duration-300 transform hover:scale-110">
-                    <img
-                      src={logo.img || "/placeholder.svg"}
-                      alt={logo.name}
-                      className="h-12 w-auto object-contain"
-                      onError={(
-                        e: React.SyntheticEvent<HTMLImageElement, Event>
-                      ) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = `https://via.placeholder.com/120x40/333/fff?text=${
-                          logo.name.split(" ")[0]
-                        }`;
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+    <div className="py-20 overflow-hidden relative selection:bg-indigo-100">
+      <div className="max-w-7xl mx-auto mb-20 px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-sm font-semibold tracking-[0.2em] text-gray-400 uppercase">Trusted by Industry Leaders</h2>
+        </div>
+        <div className="relative w-full overflow-hidden mask-fade-sides">
+          <div className="flex w-max animate-scroll-left gap-16 md:gap-24 hover:pause-animation">
+            {duplicatedLogos.map((logo, idx) => (
+              <div key={`logo-${idx}`} className="flex items-center justify-center opacity-50 hover:opacity-100 transition-opacity duration-300">
+                <img src={logo.img} alt={logo.name} className="h-8 md:h-10 w-auto object-contain grayscale" loading="lazy" />
+              </div>
+            ))}
           </div>
         </div>
       </div>
+      <div className="relative z-10">
+        <div className="max-w-7xl mx-auto px-6 mb-12 flex justify-between items-end">
+          <div>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-2">Our Expertise</h2>
+            <p className="text-gray-500 text-lg">Strategies that drive real growth.</p>
+          </div>
+        </div>
+        <div className="relative w-full overflow-hidden">
+          <div className="flex w-max animate-scroll-slow gap-6 px-4 hover:pause-animation">
+            {duplicatedCards.map((card, idx) => (
+              <div key={`card-${idx}`} className="group relative w-[280px] md:w-[360px] h-[420px] md:h-[500px] rounded-3xl overflow-hidden bg-gray-900 border border-gray-200 cursor-pointer shadow-xl">
+                <div className="absolute inset-0 w-full h-full">
+                  <img src={card.image} alt={card.title} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
+                </div>
+                <div className="absolute inset-0 p-8 flex flex-col justify-end">
+                  <div className="absolute top-6 right-6 translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                    <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                      <ArrowUpRight className="text-white w-5 h-5" />
+                    </div>
+                  </div>
+                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                    <span className="text-blue-400 text-xs font-bold tracking-widest uppercase mb-2 block">{card.category}</span>
+                    <h3 className="text-2xl font-bold text-white mb-3 leading-tight">{card.title}</h3>
+                    <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]">
+                      <div className="overflow-hidden">
+                        <p className="text-white/70 text-sm leading-relaxed pb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">{card.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-      {/* Cards Slider Section */}
-      <div className="max-w-8xl mx-auto overflow-hidden px-4">
-        <div
-          ref={cardScrollRef}
-          className="flex gap-6 pb-8 overflow-x-hidden"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        >
-          {duplicatedCards.map((card, idx) => (
-            <div
-              key={idx}
-              className="flex-shrink-0 w-full sm:w-80 md:w-96 group"
-              onMouseEnter={() => setHoveredCard(idx)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
-              <div className="bg-card rounded-2xl shadow-lg overflow-hidden transition-all duration-500 transform group-hover:shadow-2xl group-hover:scale-105 border border-border">
-                {/* Responsive image height - smaller on mobile, larger on desktop */}
-                <div className="relative h-40 sm:h-56 md:h-64 overflow-hidden">
-                  <img
-                    src={card.image || "/placeholder.svg"}
-                    alt={card.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent" />
+// ENHANCED Unique Approach Section
+const UniqueApproachSection = () => {
+  const [current, setCurrent] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => setCurrent((prev) => (prev + 1) % APPROACH_IMAGES.length), 4000);
+    return () => clearInterval(timer);
+  }, [isPaused]);
+
+  return (
+    <div className="relative py-24 bg-gradient-to-br from-gray-50 to-white overflow-hidden">
+      {/* Abstract Background Shapes */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-100 rounded-full blur-3xl opacity-40 -z-10" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-100 rounded-full blur-3xl opacity-40 -z-10" />
+
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          
+          {/* Left: Image Slider */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="relative h-[500px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl group"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={current}
+                src={APPROACH_IMAGES[current].url}
+                alt="Strategy"
+                initial={{ scale: 1.1, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8 }}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </AnimatePresence>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            
+            {/* Play/Pause Indicator */}
+            <div className="absolute bottom-8 right-8 z-20">
+               <button className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-black transition-all">
+                 {isPaused ? <Play className="w-5 h-5 ml-1" /> : <Pause className="w-5 h-5" />}
+               </button>
+            </div>
+
+            {/* Slider Dots */}
+            <div className="absolute bottom-8 left-8 flex gap-2 z-20">
+              {APPROACH_IMAGES.map((_, idx) => (
+                <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === current ? "w-8 bg-white" : "w-2 bg-white/40"}`} />
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Right: Content */}
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-10"
+          >
+            <div>
+              <span className="text-blue-600 font-bold tracking-widest uppercase text-sm mb-2 block">Our Unique Approach</span>
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                How we run Digital PR for our clients
+              </h2>
+            </div>
+
+            <div className="space-y-6">
+              {STRATEGIES.map((strategy, idx) => (
+                <div key={idx} className="group p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300">
+                  <h3 className={`text-xl font-bold mb-2 flex items-center gap-3 ${
+                    strategy.color === 'blue' ? 'text-blue-600' : 
+                    strategy.color === 'cyan' ? 'text-cyan-600' : 'text-purple-600'
+                  }`}>
+                    {strategy.title}
+                    <span className="h-px flex-1 bg-gray-100 group-hover:bg-gray-200 transition-colors" />
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed text-sm">{strategy.description}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-4">
+              <a href="#" className="inline-flex items-center gap-2 text-gray-900 font-semibold border-b-2 border-gray-900 pb-1 hover:text-blue-600 hover:border-blue-600 transition-all">
+                View All Case Studies <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          </motion.div>
+
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Enhanced Portfolio Section
+const PortfolioSection: React.FC<{ heading?: string; subheading?: string; slides?: PortfolioSlide[]; interval?: number }> = ({ 
+  heading = "Our Portfolio", 
+  subheading = "Showcasing our best work", 
+  slides = [], 
+  interval = 5000 
+}) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState(0);
+
+  // Auto-advance
+  useEffect(() => {
+    if (slides.length === 0) return;
+    const timer = setInterval(() => {
+      setDirection(1);
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, interval);
+    return () => clearInterval(timer);
+  }, [slides.length, interval]);
+
+  const changeSlide = (newIndex: number) => {
+    setDirection(newIndex > currentSlide ? 1 : -1);
+    setCurrentSlide(newIndex);
+  };
+
+  if (!slides.length) return null;
+  const currentSlideData = slides[currentSlide];
+
+  return (
+    <section className="relative py-24 md:py-32 px-4 sm:px-6 overflow-hidden">
+      
+      {/* Dynamic Blurred Background */}
+      <div className="absolute inset-0 z-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute inset-0 bg-gradient-to-br from-indigo-50/80 via-white to-pink-50/80"
+          >
+             {/* Optional: Add abstract shapes that move slightly based on slide */}
+             <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-b from-blue-200/20 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        
+        {/* Header */}
+        <div className="text-center mb-16 md:mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <span className="inline-block py-1 px-3 rounded-full bg-green-50 border border-blue-100 text-green-600 text-xs font-bold tracking-widest uppercase mb-4">
+              Featured Work
+            </span>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 tracking-tight">
+              {heading || "Digital Experiences"}
+            </h2>
+            <p className="text-xl text-gray-500 max-w-2xl mx-auto font-light">
+              {subheading}
+            </p>
+          </motion.div>
+        </div>
+
+        <div className="grid lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-24 items-center">
+          
+          {/* Left: Text Content */}
+          <div className="order-2 lg:order-1">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentSlide}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.5 }}
+                className="space-y-8"
+              >
+                <div>
+                  <h3 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
+                    {currentSlideData.title}
+                  </h3>
+                  <p className="text-lg text-gray-600 leading-relaxed border-l-4 border-green-500 pl-6">
+                    {currentSlideData.description}
+                  </p>
                 </div>
 
-                <div className="p-4 sm:p-5 md:p-6">
-                  {/* Responsive text sizes for mobile/tablet/desktop */}
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">
-                    {card.title}
-                  </h3>
+                <div className="flex flex-wrap gap-3">
+                  {["Strategy", "Design", "Development"].map((tag) => (
+                    <span key={tag} className="px-4 py-2 bg-white rounded-lg shadow-sm border border-gray-100 text-sm text-gray-600 font-medium">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
 
-                  <div
-                    className="overflow-hidden transition-all duration-500"
-                    style={{
-                      maxHeight: hoveredCard === idx ? "200px" : "0px",
-                      opacity: hoveredCard === idx ? 1 : 0,
-                    }}
-                  >
-                    <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">
-                      {card.description}
-                    </p>
+                {/* Controls */}
+                <div className="flex items-center gap-6 pt-4">
+                  <div className="flex gap-3">
+                    <button 
+                      onClick={() => changeSlide((currentSlide - 1 + slides.length) % slides.length)}
+                      className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all group"
+                    >
+                      <ArrowRight className="w-5 h-5 rotate-180 transition-transform group-hover:-translate-x-1" />
+                    </button>
+                    <button 
+                      onClick={() => changeSlide((currentSlide + 1) % slides.length)}
+                      className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all group"
+                    >
+                      <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                    </button>
                   </div>
+                  
+                  {/* Progress Line */}
+                  <div className="flex-1 h-px bg-gray-200 max-w-[200px] relative overflow-hidden">
+                    <motion.div 
+                      key={currentSlide}
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: interval / 1000, ease: "linear" }}
+                      className="absolute inset-0 bg-black"
+                    />
+                  </div>
+                  <span className="text-sm font-mono text-gray-400">
+                    0{currentSlide + 1} / 0{slides.length}
+                  </span>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-                  {hoveredCard !== idx && (
-                    <div className="text-xs sm:text-sm bg-gradient-to-r from-teal-500 via-green-500 to-blue-500 bg-clip-text text-transparent font-medium">
-                      Hover to learn more →
+          {/* Right: 3D Device Showcase */}
+          <div className="order-1 lg:order-2 flex justify-center lg:justify-end perspective-1000">
+            <motion.div
+              className="relative w-[300px] md:w-[340px] aspect-[9/19] bg-black rounded-[3.5rem] shadow-2xl border-[8px] border-gray-900 ring-1 ring-gray-900/50 overflow-hidden"
+              initial={{ rotateY: 15, rotateX: 5 }}
+              animate={{ rotateY: [15, -5, 15], rotateX: [5, -5, 5] }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              {/* Screen Content */}
+              <div className="absolute inset-0 bg-gray-800">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentSlide}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="w-full h-full"
+                  >
+                    {currentSlideData.phone}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Notch / Reflection Overlay */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-black rounded-b-2xl z-20" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none z-30" />
+            </motion.div>
+            
+            {/* Decorative blurred shadow */}
+            <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-48 h-12 bg-black/40 blur-2xl rounded-full" />
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Simple FAQ Component (Inline to prevent import errors)
+const FAQSection = ({ title, faqs }: { title: string, faqs: { question: string, answer: string }[] }) => {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  return (
+    <section className="py-24 px-6 max-w-4xl mx-auto">
+      <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">{title}</h2>
+      <div className="space-y-4">
+        {faqs.map((faq, idx) => (
+          <div key={idx} className="border border-gray-200 rounded-2xl overflow-hidden">
+            <button 
+              onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+              className="w-full flex justify-between items-center p-6 text-left bg-white hover:bg-gray-50 transition-colors"
+            >
+              <span className="font-semibold text-lg text-gray-900">{faq.question}</span>
+              <span className={`transform transition-transform ${openIndex === idx ? "rotate-45" : ""}`}>+</span>
+            </button>
+            <AnimatePresence>
+              {openIndex === idx && (
+                <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden bg-gray-50">
+                  <div className="p-6 pt-0 text-gray-600">{faq.answer}</div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+// --- MAIN PAGE ---
+const DigitalPage = () => {
+  return (
+    <main className="min-h-screen bg-white text-gray-900 overflow-x-hidden">
+      
+      {/* 1. HERO SECTION */}
+      <section className="relative pt-32 pb-20 px-6 max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 mb-8 border border-slate-200">
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="text-xs font-bold uppercase tracking-wide text-slate-600">ROI-Focused Agency</span>
+            </div>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] mb-8">
+              Digital Marketing <br />
+              <span className={TEXT_GRADIENT}>for High Growth.</span>
+            </h1>
+            <p className="text-xl text-slate-500 leading-relaxed mb-10 max-w-lg">
+              We design creative systems that turn attention into conversion. Data-driven strategies, shipped with precision.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <button className={`px-8 py-4 rounded-full text-white font-bold shadow-lg shadow-blue-500/30 hover:scale-105 transition-transform ${BRAND_GRADIENT}`}>
+                Book a Strategy Call
+              </button>
+              <button className="px-8 py-4 rounded-full bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-colors">
+                View Case Studies
+              </button>
+            </div>
+          </motion.div>
+
+          <div className="relative hidden lg:block">
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#00C96D]/20 to-[#2D79FF]/20 rounded-full blur-[100px]" />
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2, duration: 0.8 }} className="relative aspect-square rounded-[3rem] overflow-hidden shadow-2xl border-[8px] border-white bg-white">
+               <div className="w-full h-full bg-gray-100 flex items-center justify-center relative">
+                  {/* Placeholder for Hero Dashboard Image */}
+                  <div className="text-center">
+                    <p className="text-gray-400 font-medium">Dashboard Preview</p>
+                    <div className="mt-4 w-64 h-32 bg-gray-200 rounded-xl mx-auto"></div>
+                    <div className="mt-4 flex gap-4 justify-center">
+                       <div className="w-20 h-20 bg-blue-100 rounded-full"></div>
+                       <div className="w-20 h-20 bg-green-100 rounded-full"></div>
                     </div>
-                  )}
+                  </div>
+               </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. SLIDER */}
+      <div className="mt-16 relative w-full overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-r from-transparent via-blue-500/5 to-transparent blur-3xl -z-10" />
+        <div className="flex animate-scroll-left hover:pause-animation w-max gap-5 sm:gap-8 px-4">
+          {[...SLIDES, ...SLIDES, ...SLIDES].map((slide, idx) => (
+            <div key={`${slide.title}-${idx}`} className="relative min-w-[280px] sm:min-w-[350px] md:min-w-[400px] aspect-[3/4] sm:aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl flex-shrink-0 group cursor-pointer border border-white/10 bg-gray-900">
+              <div className="absolute inset-0">
+                <Image src={slide.image} alt={slide.title} fill className="object-cover transition-transform duration-700 ease-out group-hover:scale-110" sizes="(max-width: 768px) 100vw, 33vw" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80" />
+              </div>
+              <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end items-start text-white">
+                <div className="mb-4">
+                  <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md border border-white/20 rounded-full text-[10px] sm:text-xs font-semibold uppercase tracking-widest text-white/90">
+                    {slide.category}
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold leading-tight mb-2 group-hover:text-blue-200 transition-colors">
+                  {slide.title}
+                </h3>
+                <div className="flex items-center gap-2 text-white/60 text-sm mt-2 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                   <span>Read case study</span>
+                   <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
             </div>
@@ -696,552 +716,50 @@ const MultiSliderShowcase: React.FC = () => {
         </div>
       </div>
 
-      <style jsx>{`
-        div::-webkit-scrollbar {
-          display: none;
+      {/* 3. IMPACT METRICS */}
+      <ImpactSection />
+
+      {/* 4. EXPERTISE SHOWCASE */}
+      <MultiSliderShowcase />
+
+      {/* 5. APPROACH SECTION (Restored) */}
+      <UniqueApproachSection />
+
+      {/* 6. PORTFOLIO */}
+      <PortfolioSection 
+        heading="" 
+        subheading="Products that competitors try to copy" 
+        slides={PORTFOLIO_SLIDES} 
+        interval={6000} 
+      />
+
+      {/* 7. FAQ */}
+      <FAQSection title="FAQs About PreshIdeas" faqs={FAQS} />
+
+      {/* --- GLOBAL STYLES --- */}
+      <style jsx global>{`
+        @keyframes scroll-left {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-33.33%); }
+        }
+        @keyframes scroll-slow {
+          from { transform: translateX(0); }
+          to { transform: translateX(-33.33%); }
+        }
+
+        .animate-scroll-left {
+          animation: scroll-left 40s linear infinite;
+        }
+        .animate-scroll-slow {
+          animation: scroll-slow 60s linear infinite;
+        }
+        .pause-animation:hover {
+          animation-play-state: paused;
+        }
+        .mask-fade-sides {
+          mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
         }
       `}</style>
-    </div>
-  );
-};
-
-const UniqueApproachSection: React.FC<UniqueApproachSectionProps> = ({
-  sectionLabel = "Our unique approach",
-  heading = "How we run Digital PR for our clients",
-  subheading = "At Rise at Seven, we have a multi-strategy approach to using PR to move consumers down the funnel and own their category.",
-  images = [
-    {
-      url: "https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?w=800&h=900&fit=crop",
-      alt: "Conference presentation",
-    },
-    {
-      url: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&h=900&fit=crop",
-      alt: "Digital marketing strategy",
-    },
-    {
-      url: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=900&fit=crop",
-      alt: "Team collaboration",
-    },
-    {
-      url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=900&fit=crop",
-      alt: "Data analysis",
-    },
-  ],
-  strategies = [
-    {
-      title: "PUSH",
-      color: "blue",
-      description:
-        "You nearly always have a brand or product message you want to push to the world through PR and Media. Our push strategies include product PR, press office, data reports and studies, thought leadership and commentary. This is often a monthly tactic to push consistent messages, driving a dominant share of voice within your category.",
-    },
-    {
-      title: "PULL",
-      color: "cyan",
-      description:
-        "Alongside this, we have an always-on pull strategy, pulling you into media moments that are happening. We track the media so you don't have to, reacting with products, commentary, data or fun creatives to stay relevant and IN culture. Speed is the key here.",
-    },
-    {
-      title: "POW",
-      color: "purple",
-      description:
-        "And finally, pow moments. You can't lead a category without creating PR work people remember. We run bimonthly, quarterly or biannually PR campaigns, often tied with social and creators to drive brand demand at scale.",
-    },
-  ],
-  footerText = "All of these together drive category leaders, and we have case studies coming out of our ears to prove it.",
-  ctaText = "All Digital PR Case Studies",
-  ctaLink = "#",
-  slideInterval = 5000,
-  transitionDuration = 600,
-}) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (isPaused) return;
-
-    const interval = setInterval(() => {
-      setIsTransitioning(true);
-
-      setTimeout(() => {
-        setCurrentImageIndex((prev) => (prev + 1) % images.length);
-        setIsTransitioning(false);
-      }, transitionDuration);
-    }, slideInterval);
-
-    return () => clearInterval(interval);
-  }, [isPaused, images.length, slideInterval, transitionDuration]);
-
-  const togglePause = (): void => {
-    setIsPaused(!isPaused);
-  };
-
-  const getColorClasses = (color: string) => {
-    const colorMap: { [key: string]: { text: string; border: string } } = {
-      blue: { text: "text-lime-600", border: "hover:border-lime-300" },
-      cyan: { text: "text-emerald-600", border: "hover:border-emerald-300" },
-      purple: { text: "text-teal-600", border: "hover:border-teal-300" },
-      green: { text: "text-green-600", border: "hover:border-green-300" },
-      red: { text: "text-red-600", border: "hover:border-red-300" },
-      orange: { text: "text-orange-600", border: "hover:border-orange-300" },
-    };
-    return colorMap[color] || colorMap.blue;
-  };
-
-  return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 py-12 md:py-20 px-4 sm:px-6 md:px-8 lg:px-12 overflow-hidden">
-      {/* Decorative Background Elements */}
-      <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-lime-100 rounded-full filter blur-3xl opacity-30 -z-0" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-emerald-100 rounded-full filter blur-3xl opacity-30 -z-0" />
-
-      <div className="max-w-8xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
-          {/* Left Side - Image Slider */}
-          <div className="relative order-2 lg:order-1" data-aos="fade-right">
-            <div
-              className="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-900 to-gray-800 transform transition-transform duration-500 hover:scale-[1.02] digital-slider-container"
-              style={{ height: "400px", maxHeight: "500px" }}
-            >
-              {images.map((image, idx) => (
-                <div
-                  key={idx}
-                  className={`absolute inset-0 transition-all duration-700 ${
-                    idx === currentImageIndex && !isTransitioning
-                      ? "opacity-100 scale-100"
-                      : "opacity-0 scale-105"
-                  }`}
-                  style={{ zIndex: idx === currentImageIndex ? 1 : 0 }}
-                >
-                  <img
-                    src={image.url}
-                    alt={image.alt}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                </div>
-              ))}
-
-              {/* Pause/Play Button */}
-              <button
-                onClick={togglePause}
-                className="absolute bottom-4 right-4 md:bottom-8 md:right-8 bg-gradient-to-r from-lime-400 to-emerald-400 hover:from-lime-300 hover:to-emerald-300 text-gray-900 rounded-full p-3 md:p-4 shadow-2xl transition-all duration-300 hover:scale-110 hover:rotate-12 z-10 group"
-                aria-label={isPaused ? "Play slideshow" : "Pause slideshow"}
-              >
-                {isPaused ? (
-                  <Play
-                    className="w-4 h-4 md:w-6 md:h-6 transition-transform group-hover:scale-110"
-                    fill="currentColor"
-                  />
-                ) : (
-                  <Pause
-                    className="w-4 h-4 md:w-6 md:h-6 transition-transform group-hover:scale-110"
-                    fill="currentColor"
-                  />
-                )}
-              </button>
-
-              {/* Progress Bar */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 z-10">
-                <div
-                  className="h-full bg-gradient-to-r from-lime-400 to-emerald-500 transition-all"
-                  style={{
-                    width: isPaused
-                      ? `${(currentImageIndex / images.length) * 100}%`
-                      : "100%",
-                    animation: isPaused
-                      ? "none"
-                      : `progress ${slideInterval / 1000}s linear infinite`,
-                  }}
-                />
-              </div>
-
-              {/* Dots Indicator */}
-              <div className="absolute top-4 md:top-8 left-1/2 -translate-x-1/2 flex gap-2 md:gap-3 z-10">
-                {images.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setIsTransitioning(true);
-                      setTimeout(() => {
-                        setCurrentImageIndex(idx);
-                        setIsTransitioning(false);
-                      }, 300);
-                    }}
-                    className={`transition-all duration-300 rounded-full backdrop-blur-sm ${
-                      idx === currentImageIndex
-                        ? "bg-white w-8 md:w-10 h-2 md:h-2.5 shadow-lg"
-                        : "bg-white/40 w-2 md:w-2.5 h-2 md:h-2.5 hover:bg-white/70 hover:scale-125"
-                    }`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                ))}
-              </div>
-
-              {/* Image Counter */}
-              <div className="absolute top-4 md:top-8 right-4 md:right-8 bg-black/30 backdrop-blur-md text-white px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium z-10">
-                {currentImageIndex + 1} / {images.length}
-              </div>
-            </div>
-
-            {/* Decorative Element */}
-            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-lime-400 to-emerald-500 rounded-full filter blur-2xl opacity-30 -z-10" />
-          </div>
-
-          {/* Right Side - Content */}
-          <div
-            className="space-y-6 md:space-y-8 order-1 lg:order-2"
-            data-aos="fade-left"
-          >
-            <div>
-              <div className="inline-block">
-                <p className="text-transparent bg-clip-text bg-gradient-to-r from-lime-600 to-emerald-600 text-xs md:text-sm font-bold tracking-wider uppercase mb-3 md:mb-4 flex items-center gap-2">
-                  <span className="w-6 md:w-8 h-0.5 bg-gradient-to-r from-lime-600 to-emerald-600"></span>
-                  {sectionLabel}
-                </p>
-              </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4 md:mb-6 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text">
-                {heading}
-              </h2>
-              <p className="text-gray-600 text-base md:text-lg lg:text-xl leading-relaxed font-light">
-                {subheading}
-              </p>
-            </div>
-
-            <div className="space-y-4 md:space-y-6 lg:space-y-8">
-              {strategies.map((strategy, idx) => {
-                const colorClasses = getColorClasses(strategy.color);
-                return (
-                  <div
-                    key={idx}
-                    className={`group bg-white/50 backdrop-blur-sm p-4 md:p-6 rounded-xl md:rounded-2xl border border-gray-200/50 ${colorClasses.border} transition-all duration-300 hover:shadow-xl hover:-translate-y-1`}
-                  >
-                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3 flex items-center gap-2">
-                      <span className={colorClasses.text}>
-                        {strategy.title}
-                      </span>
-                      <span className="text-gray-400">—</span>
-                    </h3>
-                    <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                      {strategy.description}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="pt-4 md:pt-6">
-              <p className="text-gray-600 leading-relaxed mb-6 md:mb-8 text-base md:text-lg">
-                {footerText}
-              </p>
-              <a
-                href={ctaLink}
-                className="inline-flex items-center gap-2 md:gap-3 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white font-semibold px-6 md:px-8 py-4 md:py-5 rounded-full shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-105 group text-sm md:text-base"
-              >
-                {ctaText}
-                <ArrowRight className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover:translate-x-1" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <style jsx>{`
-        @keyframes progress {
-          from {
-            width: 0%;
-          }
-          to {
-            width: 100%;
-          }
-        }
-      `}</style>
-    </div>
-  );
-};
-
-const PortfolioSection: React.FC<PortfolioSectionProps> = ({
-  heading = "Our Portfolio",
-  subheading = "Showcasing our best work",
-  slides = [],
-  interval = 5000,
-}) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const autoSlideRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (slides.length === 0) return;
-
-    autoSlideRef.current = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, interval);
-
-    return () => {
-      if (autoSlideRef.current) clearInterval(autoSlideRef.current);
-    };
-  }, [slides.length, interval]);
-
-  const handlePrevious = () => {
-    setDirection(-1);
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
-
-  const handleNext = () => {
-    setDirection(1);
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
-
-  if (slides.length === 0) return null;
-
-  const currentSlideData = slides[currentSlide];
-
-  return (
-    <section className="py-12 md:py-16 lg:py-24 px-4 sm:px-6 bg-card/50 rounded-2xl md:rounded-3xl">
-      <div className="max-w-8xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="mb-8 md:mb-12"
-        >
-          {heading && (
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-2 md:mb-4">
-              {heading}
-            </h2>
-          )}
-          <p className="text-sm sm:text-base md:text-lg text-foreground/70">
-            {subheading}
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
-          {/* Slides Navigation */}
-          <motion.div
-            key={currentSlide}
-            initial={{ opacity: 0, x: direction * 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: direction * -40 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-4 md:space-y-6"
-          >
-            <div>
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-2 md:mb-3">
-                {currentSlideData.title}
-              </h3>
-              {currentSlideData.description && (
-                <p className="text-sm sm:text-base md:text-lg text-foreground/80 leading-relaxed">
-                  {currentSlideData.description}
-                </p>
-              )}
-            </div>
-
-            {/* Navigation Controls */}
-            <div className="flex items-center gap-3 md:gap-4 pt-4 md:pt-6">
-              <button
-                onClick={handlePrevious}
-                className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all text-lg md:text-xl"
-                aria-label="Previous slide"
-              >
-                ←
-              </button>
-
-              <div className="flex gap-1.5 md:gap-2">
-                {slides.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentSlide(idx)}
-                    className={`rounded-full transition-all ${
-                      idx === currentSlide
-                        ? "bg-accent w-6 md:w-8 h-2.5 md:h-3"
-                        : "bg-accent/30 w-2.5 h-2.5 md:w-3 md:h-3 hover:bg-accent/50"
-                    }`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={handleNext}
-                className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all text-lg md:text-xl"
-                aria-label="Next slide"
-              >
-                →
-              </button>
-            </div>
-
-            {/* Slide Counter */}
-            <div className="text-xs md:text-sm text-muted-foreground">
-              {currentSlide + 1} / {slides.length}
-            </div>
-          </motion.div>
-
-          {/* Phone/Image Display */}
-          <motion.div
-            key={`phone-${currentSlide}`}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="flex justify-center"
-          >
-            {currentSlideData.phone}
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const DigitalPage = () => {
-  const slideVariant: Variants = {
-    enter: { opacity: 0, x: 40, scale: 0.98 },
-    center: { opacity: 1, x: 0, scale: 1 },
-    exit: { opacity: 0, x: -40, scale: 0.98 },
-  };
-
-  return (
-    <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-pink-50 text-gray-900">
-      <section className="max-w-8xl mx-auto px-6 py-24">
-        {/* HERO SECTION */}
-        <section className="relative pt-32 pb-20 px-6 max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 mb-8 border border-slate-200">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                <span className="text-xs font-bold uppercase tracking-wide text-slate-600">
-                  ROI-Focused Agency
-                </span>
-              </div>
-
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] mb-8">
-                Digital Marketing <br />
-                <span className={TEXT_GRADIENT}>for High Growth.</span>
-              </h1>
-
-              <p className="text-xl text-slate-500 leading-relaxed mb-10 max-w-lg">
-                We design creative systems that turn attention into conversion.
-                Data-driven strategies, shipped with precision.
-              </p>
-
-              <div className="flex flex-wrap gap-4">
-                <button
-                  className={`px-8 py-4 rounded-full text-white font-bold shadow-lg shadow-blue-500/30 hover:scale-105 transition-transform ${BRAND_GRADIENT}`}
-                >
-                  Book a Strategy Call
-                </button>
-                <button className="px-8 py-4 rounded-full bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-colors">
-                  View Case Studies
-                </button>
-              </div>
-
-              <div className="mt-12 flex items-center gap-6 border-t border-slate-100 pt-8">
-                <div className="flex -space-x-3">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden relative"
-                    >
-                      {/* Use a simple colored div if image config is not set */}
-                      <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
-                    </div>
-                  ))}
-                </div>
-                <div className="text-sm">
-                  <p className="font-bold text-slate-900">
-                    Trusted by 500+ brands
-                  </p>
-                  <div className="flex text-yellow-400 text-xs">★★★★★</div>
-                </div>
-              </div>
-            </motion.div>
-
-            <div className="relative hidden lg:block">
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#00C96D]/20 to-[#2D79FF]/20 rounded-full blur-[100px]" />
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2, duration: 0.8 }}
-                className="relative aspect-square rounded-[3rem] overflow-hidden shadow-2xl border-[8px] border-white"
-              >
-                <Image
-                  src="/others/trend.png"
-                  alt="Dashboard"
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* Auto Scrolling Slider (Responsive Gradient Cards) */}
-        <div className="mt-10 relative overflow-hidden">
-          <motion.div
-            className="flex gap-4 sm:gap-6 md:gap-8"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
-          >
-            {[...slides, ...slides].map((slide, idx) => (
-              <motion.div
-                key={idx}
-                variants={slideVariant}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                whileHover={{ scale: 1.02 }}
-                className="min-w-[85%] xs:min-w-[280px] sm:min-w-[320px] md:min-w-[380px] lg:min-w-[420px]
-                   bg-white rounded-3xl shadow-xl overflow-hidden border border-white/30 flex-shrink-0"
-              >
-                <div className="relative h-48 sm:h-56 md:h-72">
-                  <Image
-                    src={slide.image}
-                    alt={slide.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-4 sm:p-5 bg-gradient-to-r from-white to-white/80">
-                  <p className="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500">
-                    {slide.category}
-                  </p>
-                  <h3 className="mt-1 sm:mt-2 text-base sm:text-lg md:text-xl font-semibold text-gray-800">
-                    {slide.title}
-                  </h3>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Gradient fade edges */}
-          <div className="absolute inset-y-0 left-0 w-12 sm:w-20 md:w-32 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-          <div className="absolute inset-y-0 right-0 w-12 sm:w-20 md:w-32 bg-gradient-to-l from-white to-transparent pointer-events-none" />
-        </div>
-
-        <MetricsSection />
-
-        {/* Multi Slider Showcase */}
-        <MultiSliderShowcase />
-
-        {/* Unique Approach Section */}
-        <UniqueApproachSection />
-
-        {/* Portfolio preview */}
-        <PortfolioSection
-          heading=""
-          subheading="Products that competitors try to copy"
-          slides={portfolioSlides as any}
-          interval={6000}
-        />
-        <FAQSection title="FAQs About PreshIdeas" faqs={faqs as any} />
-      </section>
     </main>
   );
 };
