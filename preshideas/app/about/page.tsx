@@ -1,24 +1,38 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { ArrowRight, Play, Pause, Star, ArrowUpRight, CheckCircle2, ArrowLeft, Quote } from "lucide-react";
-import { motion, useInView } from "framer-motion";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import {
+  ArrowRight,
+  Play,
+  Pause,
+  Star,
+  ArrowUpRight,
+  CheckCircle2,
+  ArrowLeft,
+  Quote,
+} from "lucide-react";
+// FIXED: Added 'Variants' and 'AnimatePresence' to imports
+import { motion, useInView, AnimatePresence, Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Custom component imports
 import UniqueApproachSection from "../component/IntroApproachSection";
-import TestimonialGallery from "../component/Client";
 import NewsSection from "../component/newsSection";
 
-// --- ANIMATION VARIANTS ---
-const fadeInUp = {
+// --- ANIMATION VARIANTS (FIXED: Typed as Variants) ---
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -222,10 +236,6 @@ const BentoStats = () => {
 
   return (
     <section className="py-24 px-6 max-w-7xl mx-auto" ref={ref}>
-      {/* 
-        FIXED: Removed h-[600px] constraint. 
-        The grid will now size naturally based on content, preventing text overflow.
-      */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Main Experience Card */}
         <motion.div
@@ -246,7 +256,6 @@ const BentoStats = () => {
             </div>
           </div>
           <div className="mt-8">
-            {/* Adjusted font size to fit better (8xl instead of 9xl) */}
             <span className="text-7xl md:text-8xl font-bold tracking-tighter text-gray-900">
               8
             </span>
@@ -258,7 +267,7 @@ const BentoStats = () => {
           </div>
         </motion.div>
 
-        {/* Retention Card (Dark) - Spans 2 rows naturally */}
+        {/* Retention Card */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -323,6 +332,204 @@ const BentoStats = () => {
     </section>
   );
 };
+
+// --- ENHANCED TESTIMONIAL GALLERY COMPONENT ---
+interface TestimonialItem {
+  quote: string;
+  author: string;
+  role: string;
+  image: string;
+  profile: string;
+}
+
+interface TestimonialGalleryProps {
+  title?: string;
+  highlight?: string;
+  suffix?: string;
+  gallery: TestimonialItem[];
+  interval?: number;
+  logos?: string[];
+}
+
+function TestimonialGallery({
+  title = "Recommended by",
+  highlight = "category",
+  suffix = "leaders",
+  gallery = [],
+  interval = 8000,
+  logos = [],
+}: TestimonialGalleryProps) {
+  const [current, setCurrent] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
+
+  const nextSlide = useCallback(() => {
+    setCurrent((prev) => (prev + 1) % gallery.length);
+  }, [gallery.length]);
+
+  const prevSlide = useCallback(() => {
+    setCurrent((prev) => (prev === 0 ? gallery.length - 1 : prev - 1));
+  }, [gallery.length]);
+
+  useEffect(() => {
+    if (!autoPlay || !gallery.length) return;
+    const timer = setInterval(nextSlide, interval);
+    return () => clearInterval(timer);
+  }, [autoPlay, gallery.length, interval, nextSlide]);
+
+  if (!gallery.length) return null;
+  const item = gallery[current];
+
+  return (
+    <section className="w-full py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <div className="relative bg-[#06070A] text-white rounded-[2.5rem] overflow-hidden p-8 md:p-16 isolate">
+        {/* Background Noise Texture */}
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          }}
+        />
+
+        {/* --- HEADER --- */}
+        <div className="relative z-10 flex flex-col items-center text-center mb-16">
+          <div className="flex items-center gap-1 mb-6">
+            {[...Array(5)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.1 }}
+                className="text-yellow-400 fill-yellow-400"
+              >
+                ★
+              </motion.div>
+            ))}
+          </div>
+
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight leading-tight">
+            {title}{" "}
+            <span className="relative inline-flex flex-col md:flex-row items-center justify-center align-middle gap-3 mx-1">
+              <span className="italic font-serif text-white/80">
+                {highlight}
+              </span>
+
+              <AnimatePresence mode="popLayout">
+                <motion.div
+                  key={item.profile}
+                  initial={{ width: 0, opacity: 0, scale: 0 }}
+                  animate={{ width: "auto", opacity: 1, scale: 1 }}
+                  exit={{ width: 0, opacity: 0, scale: 0 }}
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  className="inline-block align-middle"
+                >
+                  <Avatar className="w-12 h-12 md:w-16 md:h-16 border-2 border-white/20 shadow-xl">
+                    <AvatarImage src={item.profile} className="object-cover" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                </motion.div>
+              </AnimatePresence>
+            </span>{" "}
+            {suffix}
+          </h2>
+        </div>
+
+        {/* --- MAIN SLIDER --- */}
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={current}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-12 items-stretch"
+            >
+              {/* Quote Card */}
+              <div className="bg-white text-black rounded-3xl p-8 md:p-12 flex flex-col justify-between shadow-2xl relative">
+                <Quote className="absolute top-8 right-8 w-12 h-12 text-gray-100 fill-gray-100 rotate-180" />
+
+                <div className="relative z-10">
+                  <p className="text-xl md:text-2xl lg:text-3xl font-medium leading-relaxed tracking-tight">
+                    “{item.quote}”
+                  </p>
+                </div>
+
+                <div className="mt-10 flex items-center gap-4 pt-8 border-t border-gray-100">
+                  <Avatar className="w-12 h-12">
+                    <AvatarImage src={item.profile} />
+                    <AvatarFallback>{item.author[0]}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="font-bold text-lg">{item.author}</div>
+                    <div className="text-gray-500 text-sm">{item.role}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Image Card */}
+              <div className="relative h-[300px] lg:h-auto rounded-3xl overflow-hidden group">
+                <motion.img
+                  key={item.image}
+                  src={item.image}
+                  alt="Project result"
+                  initial={{ scale: 1.2 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
+
+                <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur text-black px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                  Client Success Story
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* --- CONTROLS --- */}
+          <div className="mt-10 flex items-center justify-between">
+            {/* Progress Bar */}
+            <div className="flex-1 max-w-sm h-1 bg-white/10 rounded-full overflow-hidden">
+              <motion.div
+                key={current}
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{ duration: interval / 1000, ease: "linear" }}
+                className="h-full bg-white"
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => {
+                  setAutoPlay(false);
+                  prevSlide();
+                }}
+                className="rounded-full w-12 h-12 border-white/20 bg-transparent text-white hover:bg-white hover:text-black transition-all"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => {
+                  setAutoPlay(false);
+                  nextSlide();
+                }}
+                className="rounded-full w-12 h-12 border-white/20 bg-transparent text-white hover:bg-white hover:text-black transition-all"
+              >
+                <ArrowRight className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 // --- MAIN PAGE COMPONENT ---
 
@@ -756,7 +963,6 @@ export default function About() {
       {/* 6. STATS (Bento Grid) */}
       <BentoStats />
 
-      {/* 7. MISSION & VALUES */}
       {/* 7. MISSION & VALUES (Enhanced Bento Layout) */}
       <section className="px-6 pb-24 max-w-7xl mx-auto mt-24">
         <div className="relative bg-gray-50/80 rounded-[2.5rem] p-8 md:p-12 lg:p-16 overflow-hidden border border-gray-100">
