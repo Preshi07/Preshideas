@@ -19,8 +19,16 @@ const BRAND_GRADIENT_TEXT =
 const BRAND_GRADIENT_BG =
   "bg-gradient-to-r from-[#00C96D] via-[#00B5D1] to-[#2D79FF]";
 
+// --- TYPES ---
+interface ServiceItem {
+  title: string;
+  description: string;
+  icon: React.ReactElement; // Explicitly typed as ReactElement
+  tags: string[];
+}
+
 // --- DATA ---
-const SEO_SERVICES = [
+const SEO_SERVICES: ServiceItem[] = [
   {
     title: "Technical SEO",
     description:
@@ -287,7 +295,8 @@ const Services = () => {
                         : "bg-gray-100 text-gray-500"
                     }`}
                   >
-                    {React.cloneElement(service.icon as React.ReactElement, {
+                    {/* FIXED: Added type assertion to fix build error */}
+                    {React.cloneElement(service.icon as React.ReactElement<{ className?: string }>, {
                       className: "w-5 h-5",
                     })}
                   </span>
