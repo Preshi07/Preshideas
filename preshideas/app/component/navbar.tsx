@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { X, Menu, ChevronDown, ArrowRight } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+// FIXED: Imported Variants type
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,13 +24,17 @@ export default function Navbar() {
     setOpenDropdown(openDropdown === name ? null : name);
   };
 
-  // Animation variants
-  const navVariants = {
+  // FIXED: Explicitly typed variants to satisfy TypeScript
+  const navVariants: Variants = {
     hidden: { y: -100, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+    visible: { 
+      y: 0, 
+      opacity: 1, 
+      transition: { duration: 0.5, ease: "easeOut" } 
+    },
   };
 
-  const menuItemVariants = {
+  const menuItemVariants: Variants = {
     closed: { opacity: 0, x: -20 },
     open: (i: number) => ({
       opacity: 1,
@@ -54,7 +59,6 @@ export default function Navbar() {
       >
         {/* Logo */}
         <div className="flex items-center shrink-0">
-          {/* INCREASED SIZE: w-40 h-12 (approx 160px width) */}
           <Link href="/" className="relative w-50 h-18">
             <Image
               src="/logos/brand.png"
@@ -173,7 +177,6 @@ export default function Navbar() {
             : "bg-transparent"
         }`}
       >
-        {/* INCREASED SIZE: w-32 h-10 (approx 128px width) */}
         <Link href="/" className="relative w-32 h-10">
           <Image
             src="/logos/brand.png"
@@ -246,7 +249,7 @@ export default function Navbar() {
                         <ul className="space-y-3 pl-4 border-l-2 border-gray-100 ml-1">
                           {[
                             { href: "/digital", label: "Digital Marketing" },
-                            { href: "/seo", label: "SEO" },
+                            { href: "/seo", label: "SEO Optimization" },
                             { href: "/b2b", label: "B2B Writing" },
                             { href: "/automation", label: "Automation" },
                             { href: "/strategy", label: "AI Agent" },
