@@ -1,121 +1,150 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useRef } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useSpring, useMotionValue } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 
-const servicesLeft = [
-  { name: "Digital Marketing", image: "/services/digital-pr.jpg" },
-  { name: "Workflow Automation", image: "/services/strategy.jpg" },
-  { name: "Ai Agent Building", image: "/services/data.jpg" },
-];
-
-const servicesRight = [
-  { name: "Digital PR", image: "/services/social.jpg" },
-  { name: "Content Writing", image: "/services/content.jpg" },
-  { name: "Organic Social Content", image: "/services/seo.jpg" },
+// --- Data ---
+const services = [
+  { name: "Digital Marketing", category: "Growth", image: "/services/digital-pr.jpg" },
+  { name: "Workflow Automation", category: "Tech", image: "/services/strategy.jpg" },
+  { name: "AI Agent Building", category: "Engineering", image: "/services/data.jpg" },
+  { name: "Digital PR", category: "Brand", image: "/services/social.jpg" },
+  { name: "Content Writing", category: "Creative", image: "/services/content.jpg" },
+  { name: "Organic Social", category: "Social", image: "/services/seo.jpg" },
 ];
 
 export default function Service() {
-  const [hoveredImage, setHoveredImage] = useState(null);
+  const [hoveredIdx, setHoveredIdx] = useState(null);
+  const sectionRef = useRef(null);
+  
+  // Cursor tracking
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  // Physics for smooth movement
+  const springConfig = { damping: 25, stiffness: 120 };
+  const x = useSpring(mouseX, springConfig);
+  const y = useSpring(mouseY, springConfig);
+
+  // Track mouse relative to the SECTION, not the window
+  const handleMouseMove = (e) => {
+    if (!sectionRef.current) return;
+    
+    // Get the exact position of the section on the screen
+    const rect = sectionRef.current.getBoundingClientRect();
+    
+    // Calculate mouse position relative to the section top-left corner
+    const relativeX = e.clientX - rect.left;
+    const relativeY = e.clientY - rect.top;
+
+    mouseX.set(relativeX);
+    mouseY.set(relativeY);
+  };
 
   return (
-    <section className="relative bg-[#f5f4f2] min-h-screen w-full px-6 md:px-12 py-16 overflow-hidden">
-      <div className="max-w-8xl mx-auto relative z-10">
-        {/* Header Row */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-12 gap-6">
-          <div className="flex flex-wrap items-center gap-4 md:gap-6">
-            <h1 className="text-[10vw] md:text-[5rem] font-extrabold leading-tight bg-gradient-to-r from-teal-500 via-green-500 to-blue-500 bg-clip-text text-transparent">
-              Our
-            </h1>
-            <span className="inline-block">
+    <section 
+      ref={sectionRef}
+      onMouseMove={handleMouseMove}
+      className="relative bg-white min-h-screen w-full px-6 md:px-12 py-24 overflow-hidden selection:bg-[#00C96D]/20 group/container"
+    >
+      
+      {/* --- Floating Image --- */}
+      <motion.div
+        style={{ x, y, translateX: "-50%", translateY: "-50%" }}
+        // Changed to 'absolute' so it stays inside the section
+        className="absolute top-0 left-0 z-0 pointer-events-none hidden lg:block w-[250px] h-[320px] rounded-xl overflow-hidden shadow-2xl border-4 border-white"
+      >
+        <AnimatePresence mode="wait">
+          {hoveredIdx !== null && (
+            <motion.div
+              key={hoveredIdx}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2 }}
+              className="relative w-full h-full"
+            >
               <Image
-                src="/hero0.jpg"
-                alt="Service Highlight"
-                width={100}
-                height={100}
-                className="rounded-xl object-cover w-[80px] h-[80px] md:w-[110px] md:h-[110px]"
+                src={services[hoveredIdx].image}
+                alt={services[hoveredIdx].name}
+                fill
+                className="object-cover"
               />
-            </span>
-            <h1 className="text-[10vw] md:text-[5rem] font-extrabold leading-tight text-black">
-              Services
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      <div className="max-w-[1600px] mx-auto relative z-10">
+        
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row items-end justify-between mb-24 gap-8">
+          <div className="relative">
+            <motion.div 
+              initial={{ width: 0 }} 
+              whileInView={{ width: "100%" }} 
+              viewport={{ once: true }}
+              className="absolute -top-6 left-0 h-1 bg-gradient-to-r from-[#00C96D] via-[#00B5D1] to-[#2D79FF]" 
+            />
+            <h1 className="text-[12vw] lg:text-[140px] font-bold leading-[0.9] tracking-tighter text-black mix-blend-difference">
+              OUR <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00C96D] via-[#00B5D1] to-[#2D79FF]">
+                SERVICES
+              </span>
             </h1>
           </div>
-          <a
-            href="services"
-            className="bg-white px-6 py-3 md:px-8 md:py-4 rounded-full shadow-md border border-gray-200 font-medium text-base md:text-lg text-black hover:bg-gray-100 transition whitespace-nowrap flex items-center"
+
+          <motion.a
+            href="/services"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="group flex items-center gap-4 bg-black text-white px-8 py-5 rounded-full text-lg font-medium shadow-xl hover:shadow-2xl transition-all"
           >
-            View All Services <span className="ml-2">→</span>
-          </a>
+            View Full Catalog
+            <div className="bg-white/20 p-1 rounded-full group-hover:rotate-45 transition-transform duration-300">
+              <ArrowUpRight className="w-5 h-5 text-white" />
+            </div>
+          </motion.a>
         </div>
 
-        <hr className="border-gray-300 mb-12" />
-
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8">
-          {/* Left column */}
-          <div>
-            {servicesLeft.map((service, idx) => (
-              <motion.div
-                key={service.name}
-                className="mb-10 relative cursor-pointer group"
-                onMouseEnter={() => setHoveredImage(service.image)}
-                onMouseLeave={() => setHoveredImage(null)}
-                whileHover={{ x: 8 }}
-                transition={{ type: "spring", stiffness: 200 }}
-              >
-                <h2 className="text-4xl md:text-5xl font-semibold text-black mb-4 relative z-10 group-hover:text-teal-600 transition-colors">
+        {/* Services List */}
+        <div className="flex flex-col border-t border-black/10">
+          {services.map((service, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: idx * 0.1 }}
+              onMouseEnter={() => setHoveredIdx(idx)}
+              onMouseLeave={() => setHoveredIdx(null)}
+              className="group relative border-b border-black/10 cursor-pointer z-10"
+            >
+              <div className="flex flex-col md:flex-row items-baseline justify-between py-12 px-2 md:px-6 transition-all duration-500 group-hover:px-10">
+                
+                <h2 className="text-4xl md:text-6xl lg:text-7xl font-semibold text-black/90 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#00C96D] group-hover:to-[#00B5D1] transition-all duration-300">
                   {service.name}
                 </h2>
-                {idx < servicesLeft.length - 1 && (
-                  <hr className="border-gray-300" />
-                )}
-              </motion.div>
-            ))}
-          </div>
 
-          {/* Right column */}
-          <div>
-            {servicesRight.map((service, idx) => (
-              <motion.div
-                key={service.name}
-                className="mb-10 relative cursor-pointer group"
-                onMouseEnter={() => setHoveredImage(service.image)}
-                onMouseLeave={() => setHoveredImage(null)}
-                whileHover={{ x: 8 }}
-                transition={{ type: "spring", stiffness: 200 }}
-              >
-                <h2 className="text-4xl md:text-5xl font-semibold text-black mb-4 relative z-10 group-hover:text-teal-600 transition-colors">
-                  {service.name}
-                </h2>
-                {idx < servicesRight.length - 1 && (
-                  <hr className="border-gray-300" />
-                )}
-              </motion.div>
-            ))}
-          </div>
+                <div className="flex items-center gap-8 mt-4 md:mt-0 opacity-40 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="text-sm font-mono uppercase tracking-widest hidden md:block">
+                    (0{idx + 1})
+                  </span>
+                  <span className="text-lg font-medium px-4 py-1 border border-black/20 rounded-full bg-white/50 backdrop-blur-sm">
+                    {service.category}
+                  </span>
+                  <ArrowUpRight className="w-8 h-8 transform group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-300" />
+                </div>
+              </div>
+              
+              <div className="absolute inset-0 bg-white/80 -z-10 scale-y-0 group-hover:scale-y-100 origin-top transition-transform duration-500 ease-out backdrop-blur-[2px]" />
+            </motion.div>
+          ))}
         </div>
+
       </div>
-
-      {/* Floating Background Image */}
-      <AnimatePresence>
-        {hoveredImage && (
-          <motion.div
-            key={hoveredImage}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 0.35, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          >
-            <Image
-              src={hoveredImage}
-              alt="Hover Background"
-              fill
-              className="object-cover rounded-full blur-2xl opacity-70"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }

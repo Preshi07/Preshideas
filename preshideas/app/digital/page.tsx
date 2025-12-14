@@ -82,6 +82,12 @@ type FAQSectionProps = {
   faqs?: FAQ[];
 };
 
+// --- CONSTANTS ---
+const BRAND_GRADIENT =
+  "bg-gradient-to-r from-[#00C96D] via-[#00B5D1] to-[#2D79FF]";
+const TEXT_GRADIENT =
+  "bg-clip-text text-transparent bg-gradient-to-r from-[#00C96D] via-[#00B5D1] to-[#2D79FF]";
+
 const slides: Slide[] = [
   {
     title: "Travelista",
@@ -1096,71 +1102,85 @@ const DigitalPage = () => {
   return (
     <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-pink-50 text-gray-900">
       <section className="max-w-8xl mx-auto px-6 py-24">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -18 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-              The Digital Marketing{" "}
-              <span className="block md:inline bg-gradient-to-r from-teal-500 via-green-500 to-blue-500 bg-clip-text text-transparent">
-                Agency For Higher ROI
-              </span>
-            </h1>
-
-            <p className="mt-6 text-gray-700 max-w-xl">
-              Choose success with our gradient-driven motion agency — creative
-              systems that turn attention into conversion. We design with
-              empathy, ship with precision.
-            </p>
-
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <motion.a
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                href="#book"
-                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-black text-white font-semibold shadow-lg hover:bg-gray-900 transition-colors"
-              >
-                BOOK A CALL →
-              </motion.a>
-              <motion.a
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                href="#services"
-                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-black text-white font-semibold shadow-lg hover:bg-gray-900 transition-colors"
-              >
-                OUR SERVICES →
-              </motion.a>
-            </div>
-
-            <div className="mt-6 flex items-center gap-4 text-sm text-gray-600">
-              <div className="inline-flex items-center gap-2 bg-white/60 px-3 py-2 rounded-lg shadow-sm border border-white/30">
-                ★★★★★ <span className="font-medium ml-1">4.9</span>
+        {/* HERO SECTION */}
+        <section className="relative pt-32 pb-20 px-6 max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 mb-8 border border-slate-200">
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span className="text-xs font-bold uppercase tracking-wide text-slate-600">
+                  ROI-Focused Agency
+                </span>
               </div>
-              <div className="text-gray-500">Trusted by 500+ Brands</div>
-            </div>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="flex justify-center md:justify-end"
-          >
-            <div className="w-full max-w-[480px] rounded-3xl overflow-hidden bg-gradient-to-br from-teal-50/60 to-indigo-50/60 border border-white/30 mx-auto">
-              <Image
-                src="/others/trend.png"
-                alt="Trusted brands"
-                width={480}
-                height={420}
-                className="w-full h-auto object-cover"
-              />
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] mb-8">
+                Digital Marketing <br />
+                <span className={TEXT_GRADIENT}>for High Growth.</span>
+              </h1>
+
+              <p className="text-xl text-slate-500 leading-relaxed mb-10 max-w-lg">
+                We design creative systems that turn attention into conversion.
+                Data-driven strategies, shipped with precision.
+              </p>
+
+              <div className="flex flex-wrap gap-4">
+                <button
+                  className={`px-8 py-4 rounded-full text-white font-bold shadow-lg shadow-blue-500/30 hover:scale-105 transition-transform ${BRAND_GRADIENT}`}
+                >
+                  Book a Strategy Call
+                </button>
+                <button className="px-8 py-4 rounded-full bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-colors">
+                  View Case Studies
+                </button>
+              </div>
+
+              <div className="mt-12 flex items-center gap-6 border-t border-slate-100 pt-8">
+                <div className="flex -space-x-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden relative"
+                    >
+                      {/* Use a simple colored div if image config is not set */}
+                      <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
+                    </div>
+                  ))}
+                </div>
+                <div className="text-sm">
+                  <p className="font-bold text-slate-900">
+                    Trusted by 500+ brands
+                  </p>
+                  <div className="flex text-yellow-400 text-xs">★★★★★</div>
+                </div>
+              </div>
+            </motion.div>
+
+            <div className="relative hidden lg:block">
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#00C96D]/20 to-[#2D79FF]/20 rounded-full blur-[100px]" />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
+                className="relative aspect-square rounded-[3rem] overflow-hidden shadow-2xl border-[8px] border-white"
+              >
+                <Image
+                  src="/others/trend.png"
+                  alt="Dashboard"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </motion.div>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </section>
 
         {/* Auto Scrolling Slider (Responsive Gradient Cards) */}
         <div className="mt-10 relative overflow-hidden">
