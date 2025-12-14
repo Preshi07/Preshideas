@@ -120,7 +120,7 @@ export default function BrandSlider() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 rounded-full bg-[#00C96D] text-white font-semibold text-sm hover:opacity-90 transition-all shadow-xl shadow-[#00C96D]/20 flex items-center gap-2"
+                className="px-8 py-4 rounded-full bg-[#000] text-white font-semibold text-sm hover:opacity-90 transition-all shadow-xl shadow-[#00C96D]/20 flex items-center gap-2"
               >
                 Start your Project
                 <ArrowRight className="w-4 h-4" />
