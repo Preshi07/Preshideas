@@ -91,7 +91,7 @@ export default function ScrollStackCards() {
                   style={{ y, opacity, zIndex: cardCount - i }}
                   className="absolute inset-0 flex items-center justify-center"
                 >
-                  <div className="relative w-full max-w-6xl px-2 sm:px-4 md:px-6 lg:px-8">
+                  <div className="relative w-full max-w-8xl px-2 sm:px-4 md:px-6 lg:px-8">
                     <div className="relative bg-card border border-border/40 rounded-xl sm:rounded-2xl md:rounded-3xl shadow-lg overflow-hidden backdrop-blur-sm">
                       <div
                         className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-[0.03]`}

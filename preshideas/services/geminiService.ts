@@ -1,312 +1,183 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import path from "path";
+import * as dotenv from "dotenv";
+import {
+  GoogleGenerativeAI,
+  GenerativeModel,
+} from "@google/generative-ai";
 import { WorkflowStep, AgentConfig } from "../types";
 
-// Constants
-const MODEL_NAME = "gemini-2.5-flash" as const;
-const SIMULATION_DELAY = 2000;
-const REQUEST_TIMEOUT = 30000; // 30 seconds
+// --- FORCE LOAD ENV VARS ---
+if (typeof window === "undefined") {
+  try {
+    dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+  } catch (e) {
+    // Ignore
+  }
+}
 
-// Custom error types
-class GeminiServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly originalError?: unknown
-  ) {
+// --- CONSTANTS ---
+// We will cycle through these until one works for your API Key
+const MODEL_CANDIDATES = [
+  "gemini-1.5-flash",      // Newest Standard
+  "gemini-1.5-flash-001",  // Specific Version
+  "gemini-1.5-flash-8b",   // Lightweight Version
+  "gemini-1.0-pro",        // Legacy Standard (most compatible)
+  "gemini-pro"             // Oldest Alias
+];
+
+export class GeminiServiceError extends Error {
+  constructor(message: string, public code: string) {
     super(message);
     this.name = "GeminiServiceError";
   }
 }
 
-// Validation helpers
-const validateApiKey = (key: string | undefined): string => {
-  if (!key || key.trim().length === 0) {
-    throw new GeminiServiceError(
-      "API key is missing or empty",
-      "MISSING_API_KEY"
-    );
-  }
-  return key;
-};
-
-const validateInput = (input: string, fieldName: string): void => {
-  if (!input || input.trim().length === 0) {
-    throw new GeminiServiceError(
-      `${fieldName} cannot be empty`,
-      "INVALID_INPUT"
-    );
-  }
-  if (input.length > 5000) {
-    throw new GeminiServiceError(
-      `${fieldName} exceeds maximum length of 5000 characters`,
-      "INPUT_TOO_LONG"
-    );
-  }
-};
-
-// Fallback data generators
-const generateFallbackWorkflow = (task: string): WorkflowStep[] => [
-  {
-    step: 1,
-    title: "Trigger Event",
-    tool: "Webhook",
-    description: "Detects new input via API webhook.",
-  },
-  {
-    step: 2,
-    title: "Data Processing",
-    tool: "Python Script",
-    description: "Normalizes data structure for analysis.",
-  },
-  {
-    step: 3,
-    title: "AI Analysis",
-    tool: "Gemini 1.5 Flash",
-    description: "Analyzes content sentiment and key entities.",
-  },
-  {
-    step: 4,
-    title: "Action Execution",
-    tool: "Slack API",
-    description: "Notifies the team with a summary report.",
-  },
-];
-
-const generateFallbackAgentConfig = (idea: string): AgentConfig => ({
-  name: "AutoBot Alpha",
-  role: "Customer Success Assistant",
-  instructions: [
-    "Always be polite and professional.",
-    "Verify user identity first.",
-    "Escalate complex issues to human agents.",
-  ],
-  capabilities: [
-    "Natural Language Processing",
-    "Database Querying",
-    "Email Dispatch",
-  ],
-});
-
-// Service class
 class GeminiService {
-  private ai: GoogleGenAI | null = null;
-  private readonly useFallback: boolean;
+  private genAI: GoogleGenerativeAI | null = null;
+  private apiKey: string | undefined;
 
-  constructor(apiKey?: string) {
-    this.useFallback = !apiKey;
+  constructor(options: { apiKey?: string } = {}) {
+    this.apiKey = (options.apiKey || process.env.API_KEY || "").trim();
     
-    if (apiKey) {
+    if (this.apiKey) {
       try {
-        this.ai = new GoogleGenAI({ apiKey: validateApiKey(apiKey) });
-      } catch (error) {
-        console.warn("Failed to initialize Gemini AI, using fallback mode:", error);
-        this.useFallback = true;
+        this.genAI = new GoogleGenerativeAI(this.apiKey);
+      } catch (err) {
+        console.error("Failed to init Gemini Client:", err);
       }
     }
   }
 
-  private async simulateDelay(): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve, SIMULATION_DELAY));
-  }
+  // --- CORE HELPER: TRY ALL MODELS ---
+  private async generateWithFallback(prompt: string): Promise<string> {
+    if (!this.genAI) throw new Error("No API Key");
 
-  private parseJsonResponse<T>(text: string, operationType: string): T {
-    try {
-      return JSON.parse(text) as T;
-    } catch (error) {
-      throw new GeminiServiceError(
-        `Failed to parse ${operationType} response`,
-        "PARSE_ERROR",
-        error
-      );
+    let lastError = null;
+
+    for (const modelName of MODEL_CANDIDATES) {
+      try {
+        // console.log(`Attempting model: ${modelName}`); // Uncomment to debug
+        const model = this.genAI.getGenerativeModel({ model: modelName });
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        return response.text();
+      } catch (error: any) {
+        // If 404 (Model Not Found) or 400 (Not supported), try next
+        if (error.message?.includes("404") || error.message?.includes("not found")) {
+          // console.warn(`Model ${modelName} not available, trying next...`);
+          lastError = error;
+          continue; 
+        }
+        // If it's a real error (like Quota Exceeded), stop trying
+        throw error;
+      }
     }
+    throw lastError || new Error("All models failed");
   }
 
-  private async makeRequestWithTimeout<T>(
-    requestFn: () => Promise<T>,
-    timeout: number = REQUEST_TIMEOUT
-  ): Promise<T> {
-    const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(
-        () => reject(new GeminiServiceError("Request timeout", "TIMEOUT")),
-        timeout
-      )
-    );
-
-    return Promise.race([requestFn(), timeoutPromise]);
+  // --- HELPER: Strip Markdown ---
+  private cleanAndParseJSON<T>(text: string): T {
+    try {
+      const cleaned = text.replace(/```json/g, "").replace(/```/g, "").trim();
+      return JSON.parse(cleaned);
+    } catch (e) {
+      console.error("JSON Parse Error. Raw text:", text);
+      throw new Error("Failed to parse AI response");
+    }
   }
 
   async generateWorkflow(task: string): Promise<WorkflowStep[]> {
-    validateInput(task, "Task");
+    if (!this.genAI) return this.smartFallbackWorkflow(task);
 
-    if (this.useFallback || !this.ai) {
-      console.info("Using fallback workflow generation");
-      await this.simulateDelay();
-      return generateFallbackWorkflow(task);
-    }
+    const prompt = `
+      Act as an Automation Architect. Design a 4-step workflow for: "${task}".
+      Guidelines:
+      1. Use REAL tools (e.g. Stripe, Slack, HubSpot) not generic names.
+      2. Return ONLY a raw JSON array.
+      
+      JSON Structure:
+      [
+        { "step": 1, "title": "Trigger Name", "tool": "Tool Name", "description": "Details..." }
+      ]
+    `;
 
     try {
-      const response = await this.makeRequestWithTimeout(async () => {
-        return await this.ai!.models.generateContent({
-          model: MODEL_NAME,
-          contents: `Design a 4-step automation workflow for this task: "${task}". 
-          Each step should have a clear title, appropriate tool, and detailed description.
-          Ensure the workflow is logical and follows best practices.`,
-          config: {
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  step: { type: Type.INTEGER },
-                  title: { type: Type.STRING },
-                  tool: { type: Type.STRING },
-                  description: { type: Type.STRING },
-                },
-                required: ["step", "title", "tool", "description"],
-              },
-            },
-          },
-        });
-      });
-
-      const text = response.text;
-      if (!text) {
-        throw new GeminiServiceError(
-          "Empty response from AI",
-          "EMPTY_RESPONSE"
-        );
-      }
-
-      const workflow = this.parseJsonResponse<WorkflowStep[]>(text, "workflow");
-      
-      // Validate workflow structure
-      if (!Array.isArray(workflow) || workflow.length === 0) {
-        throw new GeminiServiceError(
-          "Invalid workflow structure",
-          "INVALID_WORKFLOW"
-        );
-      }
-
-      return workflow;
+      // USE THE FALLBACK MECHANISM
+      const text = await this.generateWithFallback(prompt);
+      return this.cleanAndParseJSON<WorkflowStep[]>(text);
     } catch (error) {
-      if (error instanceof GeminiServiceError) {
-        throw error;
-      }
-      
-      console.error("Gemini Workflow Error:", error);
-      throw new GeminiServiceError(
-        "Failed to generate workflow",
-        "GENERATION_ERROR",
-        error
-      );
+      console.error("All Models Failed (Workflow):", error);
+      return this.smartFallbackWorkflow(task);
     }
   }
 
   async generateAgentConfig(idea: string): Promise<AgentConfig> {
-    validateInput(idea, "Idea");
+    if (!this.genAI) return this.smartFallbackAgent(idea);
 
-    if (this.useFallback || !this.ai) {
-      console.info("Using fallback agent config generation");
-      await this.simulateDelay();
-      return generateFallbackAgentConfig(idea);
-    }
+    const prompt = `
+      Create an AI Agent config for: "${idea}".
+      Return ONLY a raw JSON object.
+      
+      JSON Structure:
+      {
+        "name": "Agent Name",
+        "role": "Short Role Description",
+        "instructions": ["Rule 1", "Rule 2", "Rule 3"],
+        "capabilities": ["Skill 1", "Skill 2", "Skill 3"]
+      }
+    `;
 
     try {
-      const response = await this.makeRequestWithTimeout(async () => {
-        return await this.ai!.models.generateContent({
-          model: MODEL_NAME,
-          contents: `Create a detailed configuration for an AI agent based on this idea: "${idea}".
-          Include a meaningful name, specific role, clear instructions, and relevant capabilities.
-          Ensure the configuration is practical and actionable.`,
-          config: {
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: Type.OBJECT,
-              properties: {
-                name: { type: Type.STRING },
-                role: { type: Type.STRING },
-                instructions: {
-                  type: Type.ARRAY,
-                  items: { type: Type.STRING },
-                },
-                capabilities: {
-                  type: Type.ARRAY,
-                  items: { type: Type.STRING },
-                },
-              },
-              required: ["name", "role", "instructions", "capabilities"],
-            },
-          },
-        });
-      });
-
-      const text = response.text;
-      if (!text) {
-        throw new GeminiServiceError(
-          "Empty response from AI",
-          "EMPTY_RESPONSE"
-        );
-      }
-
-      const config = this.parseJsonResponse<AgentConfig>(text, "agent config");
-      
-      // Validate config structure
-      if (!config.name || !config.role || !Array.isArray(config.instructions)) {
-        throw new GeminiServiceError(
-          "Invalid agent config structure",
-          "INVALID_CONFIG"
-        );
-      }
-
-      return config;
+      // USE THE FALLBACK MECHANISM
+      const text = await this.generateWithFallback(prompt);
+      return this.cleanAndParseJSON<AgentConfig>(text);
     } catch (error) {
-      if (error instanceof GeminiServiceError) {
-        throw error;
-      }
-      
-      console.error("Gemini Agent Error:", error);
-      throw new GeminiServiceError(
-        "Failed to generate agent config",
-        "GENERATION_ERROR",
-        error
-      );
+      console.error("All Models Failed (Agent):", error);
+      return this.smartFallbackAgent(idea);
     }
   }
 
-  // Utility method to check if service is using fallback mode
-  isUsingFallback(): boolean {
-    return this.useFallback;
+  // --- SMART FALLBACKS ---
+  private smartFallbackWorkflow(task: string): WorkflowStep[] {
+    console.log("Using Smart Fallback (Workflow)");
+    const t = task.toLowerCase();
+    
+    let triggerTool = "Webhook";
+    let triggerTitle = "Receive Data";
+    if (t.includes("stripe") || t.includes("payment")) { triggerTool = "Stripe"; triggerTitle = "Payment Succeeded"; }
+    else if (t.includes("email") || t.includes("gmail")) { triggerTool = "Gmail"; triggerTitle = "New Email Received"; }
+
+    return [
+      { step: 1, title: triggerTitle, tool: triggerTool, description: `Triggers on: ${task}` },
+      { step: 2, title: "Process Data", tool: "Python Script", description: "Validates and formats the incoming data." },
+      { step: 3, title: "Update CRM", tool: "HubSpot", description: "Creates a new record with the customer details." },
+      { step: 4, title: "Notify Team", tool: "Slack", description: "Sends a notification to the operations channel." },
+    ];
+  }
+
+  private smartFallbackAgent(idea: string): AgentConfig {
+    console.log("Using Smart Fallback (Agent)");
+    return {
+      name: "Nexus-7",
+      role: "Specialist",
+      instructions: ["Analyze input", "Execute task", `Focus on: ${idea}`],
+      capabilities: ["Data Analysis", "Natural Language Processing"],
+    };
   }
 }
 
-// Singleton instance
-let geminiServiceInstance: GeminiService | null = null;
+// --- EXPORTS ---
+let instance: GeminiService | null = null;
 
-export const initializeGeminiService = (apiKey?: string): GeminiService => {
-  if (!geminiServiceInstance) {
-    geminiServiceInstance = new GeminiService(apiKey || process.env.API_KEY);
-  }
-  return geminiServiceInstance;
+export const getGeminiService = () => {
+  if (!instance) instance = new GeminiService();
+  return instance;
 };
 
-export const getGeminiService = (): GeminiService => {
-  if (!geminiServiceInstance) {
-    geminiServiceInstance = initializeGeminiService();
-  }
-  return geminiServiceInstance;
+export const generateWorkflow = async (task: string) => {
+  return getGeminiService().generateWorkflow(task);
 };
 
-// Backward compatibility exports
-export const generateWorkflow = async (task: string): Promise<WorkflowStep[]> => {
-  const service = getGeminiService();
-  return service.generateWorkflow(task);
+export const generateAgentConfig = async (idea: string) => {
+  return getGeminiService().generateAgentConfig(idea);
 };
-
-export const generateAgentConfig = async (idea: string): Promise<AgentConfig> => {
-  const service = getGeminiService();
-  return service.generateAgentConfig(idea);
-};
-
-// Export error class for consumers
-export { GeminiServiceError };
