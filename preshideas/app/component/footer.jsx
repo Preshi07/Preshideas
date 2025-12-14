@@ -15,10 +15,10 @@ import Link from "next/link"
 
 const navigation = {
   company: [
-    { name: "About", href: "#" },
-    { name: "Culture", href: "#" },
-    { name: "Careers", href: "#" },
-    { name: "Meet The Team", href: "#" },
+    { name: "About", href: "/about" },
+    // { name: "Culture", href: "#" },
+    // { name: "C", href: "#" },
+    { name: "Meet The Team", href: "team" },
   ],
   services: [
     { name: "Services", href: "#" },
@@ -49,9 +49,9 @@ const socialLinks = [
 ]
 
 const contactInfo = [
-  { icon: Mail, text: "hello@company.com", href: "mailto:hello@company.com" },
-  { icon: Phone, text: "+1 (555) 123-4567", href: "tel:+15551234567" },
-  { icon: MapPin, text: "New York, NY", href: "#" },
+  { icon: Mail, text: "hello@preshideas.com", href: "mailto:hello@preshideas.com" },
+  { icon: Phone, text: "+234(810)-8607-207", href: "tel:+2348108607207" },
+  { icon: MapPin, text: "Lagos, Nigeria", href: "#" },
 ]
 
 export default function Footer() {
