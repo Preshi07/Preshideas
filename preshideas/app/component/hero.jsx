@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Globe, Cpu, CheckCircle } from "lucide-react";
+import { ArrowRight, Globe, Cpu, CheckCircle, } from "lucide-react";
 
 const slides = ["/hero0.png", "/hero1.png", "/hero3.png"];
 
@@ -62,10 +63,8 @@ export default function Hero() {
 
       {/* Grid Layout Container */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
-        
         {/* --- Left: Typography --- */}
         <div className="space-y-6 sm:space-y-8 text-center lg:text-left order-1">
-          
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -90,7 +89,7 @@ export default function Hero() {
               >
                 Be Seen.
               </motion.div>
-              
+
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -115,17 +114,26 @@ export default function Hero() {
           </div>
 
           <p className="text-base sm:text-lg lg:text-xl text-gray-400 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light px-2 sm:px-0">
-            We help ambitious brands communicate better, grow smarter, and dominate search results with precision engineering.
+            We help ambitious brands communicate better, grow smarter, and
+            dominate search results with precision engineering.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full sm:w-auto">
-            <button className="px-8 py-4 bg-white text-black font-bold rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
+            <a
+              href="https://calendly.com/seiduadaeiza06/30min"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-4 bg-white text-black font-bold rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
+            >
               Start Project
               <ArrowRight className="w-4 h-4" />
-            </button>
-            <button className="px-8 py-4 border border-white/20 text-white font-medium rounded-lg hover:bg-white/5 transition-colors w-full sm:w-auto">
+            </a>
+            <Link
+              href="/work"
+              className="px-8 py-4 border border-white/20 text-white font-medium rounded-lg hover:bg-white/5 transition-colors w-full sm:w-auto"
+            >
               Our Work
-            </button>
+            </Link>
           </div>
 
           <div className="pt-2 sm:pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-8 text-xs sm:text-sm text-gray-500 font-mono">
@@ -152,7 +160,7 @@ export default function Hero() {
           >
             {/* Glossy Reflection */}
             <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none" />
-            
+
             {/* Image Slideshow */}
             <div className="absolute inset-0 bg-black">
               {slides.map((src, i) => (
@@ -175,28 +183,30 @@ export default function Hero() {
             </div>
 
             {/* Floating UI Elements */}
-            <motion.div 
+            <motion.div
               style={{ z: 50 }}
               className="absolute bottom-6 left-6 right-6 p-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl"
             >
               <div className="flex justify-between items-center">
                 <div className="text-left">
-                  <p className="text-[10px] text-[#00C96D] font-bold uppercase tracking-wider">Featured Project</p>
-                  <p className="text-white font-semibold text-xs sm:text-sm">Growth Automation System</p>
+                  <p className="text-[10px] text-[#00C96D] font-bold uppercase tracking-wider">
+                    Featured Project
+                  </p>
+                  <p className="text-white font-semibold text-xs sm:text-sm">
+                    Growth Automation System
+                  </p>
                 </div>
                 <div className="h-8 w-8 rounded-full border border-white/30 flex items-center justify-center bg-white/10 shrink-0">
                   <ArrowRight className="w-4 h-4 text-white" />
                 </div>
               </div>
             </motion.div>
-
           </motion.div>
-          
+
           {/* Decorative Elements - Resized to fit new desktop dimensions */}
           <div className="absolute -z-10 top-4 -right-4 lg:top-6 lg:-right-6 w-full h-full border border-white/5 rounded-3xl" />
           <div className="absolute -z-20 top-8 -right-8 lg:top-12 lg:-right-12 w-full h-full border border-white/5 rounded-3xl" />
         </div>
-
       </div>
     </section>
   );
