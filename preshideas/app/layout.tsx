@@ -66,8 +66,8 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: "/brand.jpg",
-    apple: "/brand.jpg",
+    icon: "/logos/brand.png",
+    apple: "/logos/brand.png",
   },
 
   openGraph: {
