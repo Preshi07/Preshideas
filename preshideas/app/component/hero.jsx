@@ -3,14 +3,19 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Globe, Cpu, CheckCircle, } from "lucide-react";
+import { ArrowRight, Globe, Cpu, CheckCircle } from "lucide-react";
 
 const slides = ["/hero0.png", "/hero1.png", "/hero3.png"];
 
 export default function Hero() {
   const [index, setIndex] = useState(0);
+  const [calendlyReady, setCalendlyReady] = useState(false);
   const containerRef = useRef(null);
+
+  // Paste your Calendly "Copy link" URL here
+  const calendlyUrl = "https://calendly.com/seiduadaeiza06/new-meeting-1";
 
   // --- Mouse Physics for 3D Tilt ---
   const x = useMotionValue(0);
@@ -23,6 +28,7 @@ export default function Hero() {
   const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-15deg", "15deg"]);
 
   const handleMouseMove = (e) => {
+    if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
@@ -119,15 +125,17 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full sm:w-auto">
-            <a
-              href="https://calendly.com/seiduadaeiza06/30min"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-4 bg-white text-black font-bold rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
+            <button
+              type="button"
+              disabled={!calendlyReady}
+              onClick={() =>
+                window.Calendly.initPopupWidget({ url: calendlyUrl })
+              }
+              className="px-8 py-4 bg-white text-black font-bold rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
             >
               Start Project
               <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
             <Link
               href="/work"
               className="px-8 py-4 border border-white/20 text-white font-medium rounded-lg hover:bg-white/5 transition-colors w-full sm:w-auto"
@@ -154,14 +162,10 @@ export default function Hero() {
               rotateY,
               transformStyle: "preserve-3d",
             }}
-            // UPDATED: Reduced Desktop size (lg:max-w-[460px] xl:max-w-[500px])
-            // Maintained Mobile size (w-full max-w-[420px])
             className="relative w-full max-w-[420px] lg:max-w-[460px] xl:max-w-[500px] aspect-[4/5] rounded-3xl bg-gray-900 border border-white/10 shadow-2xl overflow-hidden group"
           >
-            {/* Glossy Reflection */}
             <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none" />
 
-            {/* Image Slideshow */}
             <div className="absolute inset-0 bg-black">
               {slides.map((src, i) => (
                 <motion.div
@@ -182,7 +186,6 @@ export default function Hero() {
               ))}
             </div>
 
-            {/* Floating UI Elements */}
             <motion.div
               style={{ z: 50 }}
               className="absolute bottom-6 left-6 right-6 p-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl"
@@ -203,11 +206,22 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* Decorative Elements - Resized to fit new desktop dimensions */}
           <div className="absolute -z-10 top-4 -right-4 lg:top-6 lg:-right-6 w-full h-full border border-white/5 rounded-3xl" />
           <div className="absolute -z-20 top-8 -right-8 lg:top-12 lg:-right-12 w-full h-full border border-white/5 rounded-3xl" />
         </div>
       </div>
+
+      {/* Calendly styles (important for popup visibility) */}
+      <Script
+        src="https://assets.calendly.com/assets/external/widget.js"
+        strategy="afterInteractive"
+        onLoad={() => setCalendlyReady(true)}
+      />
+
+      <link
+        rel="stylesheet"
+        href="https://assets.calendly.com/assets/external/widget.css"
+      />
     </section>
   );
 }

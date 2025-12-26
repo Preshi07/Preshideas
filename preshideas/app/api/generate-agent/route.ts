@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getGeminiService } from "@/services/geminiService";
+// 👇 CHANGE: Import the helper function directly
+import { generateAgentConfig } from "@/services/geminiService";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,8 +13,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const gemini = getGeminiService();
-    const config = await gemini.generateAgentConfig(idea);
+    // 👇 CHANGE: Use the helper function directly
+    // This handles the class instantiation and provider logic internally
+    const config = await generateAgentConfig(idea);
 
     return NextResponse.json({ config });
   } catch (err: any) {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getGeminiService } from "@/services/geminiService";
+// 👇 CHANGE: Import the function directly, not the class instance getter
+import { generateWorkflow } from "@/services/geminiService";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,8 +13,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const gemini = getGeminiService();
-    const workflow = await gemini.generateWorkflow(task);
+    // 👇 CHANGE: Call the imported function directly
+    const workflow = await generateWorkflow(task);
 
     return NextResponse.json({ workflow });
   } catch (err: any) {
