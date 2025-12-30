@@ -545,13 +545,13 @@ export default function About() {
     },
     {
       src: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80",
-      name: "Carlos Nguyen",
+      name: "Seun",
       role: "Head of Strategy",
       bio: "Turns insight into clear growth plans and measurable outcomes.",
     },
     {
       src: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80",
-      name: "Maya Patel",
+      name: "Violet Okonkwo",
       role: "Creative Director",
       bio: "Design lead crafting stories and visual systems that scale.",
     },
@@ -701,7 +701,7 @@ export default function About() {
                     style={{ letterSpacing: "0.1em" }}
                   >
                     <textPath href="#circlePath" startOffset="0%">
-                      ENJOY THE VIEW • ENJOY THE VIEW •
+                      GAIN GROWTH • GAIN GROWTH •
                     </textPath>
                   </text>
                 </svg>
@@ -718,7 +718,7 @@ export default function About() {
                 muted
                 playsInline
                 className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
-                poster="https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=90"
+                poster="/preview.png"
               >
                 <source
                   src="https://assets.mixkit.co/videos/preview/mixkit-couple-watching-tv-together-4642-large.mp4"
