@@ -15,7 +15,7 @@ export default function Hero() {
   const containerRef = useRef(null);
 
   // Paste your Calendly "Copy link" URL here
-  const calendlyUrl = "https://calendly.com/seiduadaeiza06/new-meeting-1";
+  const calendlyUrl = "https://calendly.com/udo-precious01/30min";
 
   // --- Mouse Physics for 3D Tilt ---
   const x = useMotionValue(0);
