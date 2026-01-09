@@ -83,10 +83,10 @@ export default function Service() {
         <div className="flex flex-col lg:flex-row items-end justify-between mb-24 gap-8">
           <div className="relative">
             <motion.div 
-              initial={{ width: 0 }} 
-              whileInView={{ width: "100%" }} 
-              viewport={{ once: true }}
-              className="absolute -top-6 left-0 h-1 bg-gradient-to-r from-[#00C96D] via-[#00B5D1] to-[#2D79FF]" 
+              // initial={{ width: 0 }} 
+              // whileInView={{ width: "100%" }} 
+              // viewport={{ once: true }}
+              // className="absolute -top-6 left-0 h-1 bg-gradient-to-r from-[#00C96D] via-[#00B5D1] to-[#2D79FF]" 
             />
             <h1 className="text-[12vw] lg:text-[140px] font-bold leading-[0.9] tracking-tighter text-black mix-blend-difference">
               OUR <br />
